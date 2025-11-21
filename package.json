@@ -1,0 +1,185 @@
+{
+  "name": "calc3dprint",
+  "version": "1.0.0",
+  "description": "Sistema completo para calcular custos e preços de venda de impressões 3D",
+  "main": "electron.js",
+  "author": {
+    "name": "Koalitos",
+    "url": "https://github.com/koalitos"
+  },
+  "license": "MIT",
+  "homepage": "https://koalitos.github.io/calc3D/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/koalitos/calc3D.git"
+  },
+  "bugs": {
+    "url": "https://github.com/koalitos/calc3D/issues"
+  },
+  "keywords": [
+    "3d-printing",
+    "calculator",
+    "cost-calculator",
+    "electron",
+    "react",
+    "sqlite",
+    "desktop-app"
+  ],
+  "scripts": {
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "cd backend && npm start",
+    "start:frontend": "cd frontend && npm start",
+    "electron": "electron .",
+    "electron-dev": "concurrently \"npm run start:backend\" \"cross-env BROWSER=none npm run start:frontend\" \"wait-on http://localhost:3000 && electron .\"",
+    "build": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm install --production",
+    "prebuild": "npm run build",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "dist:linux": "npm run build && electron-builder --linux",
+    "dist:all": "npm run build && electron-builder -mwl",
+    "postinstall": "electron-builder install-app-deps",
+    "lint": "eslint . --ext .js,.jsx",
+    "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
+    "test": "npm run test:frontend && npm run test:backend",
+    "test:frontend": "cd frontend && npm test",
+    "test:backend": "cd backend && npm test",
+    "clean": "rimraf dist frontend/build backend/node_modules frontend/node_modules node_modules",
+    "reset-db": "cd backend && npm run reset"
+  },
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "electron": "^27.1.3",
+    "electron-builder": "^24.9.1",
+    "eslint": "^8.56.0",
+    "prettier": "^3.1.1",
+    "rimraf": "^5.0.5",
+    "wait-on": "^7.2.0"
+  },
+  "build": {
+    "appId": "com.koalitos.calc3dprint",
+    "productName": "Calc 3D Print",
+    "copyright": "Copyright © 2025 Koalitos",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "electron.js",
+      "frontend/build/**/*",
+      "backend/**/*",
+      "!backend/node_modules/**/*",
+      "!backend/database.sqlite",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "backend",
+        "to": "backend",
+        "filter": [
+          "**/*",
+          "!node_modules/**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "artifactName": "${productName}-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Calc 3D Print",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "icon": "build/icon.icns",
+      "category": "public.app-category.productivity",
+      "artifactName": "${productName}-${version}-${arch}.${ext}",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ],
+      "title": "Calc 3D Print ${version}",
+      "icon": "build/icon.icns",
+      "background": "build/background.png",
+      "window": {
+        "width": 540,
+        "height": 380
+      }
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icons",
+      "category": "Utility",
+      "artifactName": "${productName}-${version}-${arch}.${ext}",
+      "desktop": {
+        "Name": "Calc 3D Print",
+        "Comment": "Calculadora de custos para impressão 3D",
+        "Categories": "Utility;Office;"
+      }
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "koalitos",
+      "repo": "calc3D"
+    }
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

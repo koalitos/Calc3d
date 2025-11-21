@@ -390,6 +390,9 @@ section {
 }
 
 .download-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
     margin-bottom: 3rem;
 }
 
@@ -398,6 +401,13 @@ section {
     padding: 2rem;
     border-radius: 1rem;
     border: 1px solid var(--border);
+    transition: all 0.3s;
+}
+
+.download-option:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
 }
 
 .download-icon {

@@ -4,6 +4,10 @@ Sistema completo para calcular custos e preços de venda de impressões 3D.
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS-blue)
+![GitHub stars](https://img.shields.io/github/stars/koalitos/calc3D?style=social)
+
+**🌐 [Visite o Site Oficial](https://koalitos.github.io/calc3D/)**
 
 ## 🎯 Funcionalidades
 
@@ -41,8 +45,11 @@ Sistema completo para calcular custos e preços de venda de impressões 3D.
 
 ### Para Usuários
 
-Baixe o instalador e execute:
+Baixe o instalador para seu sistema operacional:
 - **Windows:** `Calc3DPrint-Setup-1.0.0.exe`
+- **macOS:** `Calc3DPrint-1.0.0-x64.dmg` (Intel) ou `Calc3DPrint-1.0.0-arm64.dmg` (Apple Silicon)
+
+**[📥 Download na página de Releases](https://github.com/koalitos/calc3D/releases)**
 
 Veja o [Guia de Instalação](docs/INSTALACAO.md) completo.
 
@@ -50,7 +57,7 @@ Veja o [Guia de Instalação](docs/INSTALACAO.md) completo.
 
 ```bash
 # Clone o repositório
-git clone <url-do-repo>
+git clone https://github.com/koalitos/calc3D.git
 cd calc3D
 
 # Instale dependências do frontend
@@ -147,7 +154,12 @@ O sistema calcula automaticamente:
 
 ## 📦 Distribuição
 
-O instalador inclui:
+### Plataformas Suportadas
+- ✅ **Windows** 10/11 (64-bit)
+- ✅ **macOS** 10.13+ (Intel e Apple Silicon)
+- 🔄 **Linux** (em desenvolvimento)
+
+### O instalador inclui:
 - ✅ Aplicativo completo
 - ✅ Backend integrado
 - ✅ Banco de dados SQLite
@@ -160,24 +172,44 @@ Contribuições são bem-vindas! Veja [DESENVOLVIMENTO.md](docs/DESENVOLVIMENTO.
 
 ## 📝 Licença
 
-Este projeto está sob a licença MIT. Veja [LICENSE.txt](LICENSE.txt)
+Este projeto está sob a licença MIT. Veja [LICENSE](LICENSE)
 
 ## 👨‍💻 Autor
 
+**Koalitos**
+- GitHub: [@koalitos](https://github.com/koalitos)
+- Projeto: [Calc 3D Print](https://github.com/koalitos/calc3D)
+
 Desenvolvido com ❤️ para a comunidade de impressão 3D
+
+## 🤝 Contribuindo
+
+Contribuições são bem-vindas! Para contribuir:
+
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/NovaFuncionalidade`)
+3. Commit suas mudanças (`git commit -m 'Add: nova funcionalidade'`)
+4. Push para a branch (`git push origin feature/NovaFuncionalidade`)
+5. Abra um Pull Request
+
+Veja [DESENVOLVIMENTO.md](docs/DESENVOLVIMENTO.md) para mais detalhes.
 
 ## 🐛 Reportar Bugs
 
-Encontrou um bug? Abra uma issue descrevendo:
+Encontrou um bug? [Abra uma issue](https://github.com/koalitos/calc3D/issues) descrevendo:
 - O que aconteceu
 - O que deveria acontecer
 - Passos para reproduzir
+- Versão do sistema e do aplicativo
 
-## 📮 Contato
+## 📞 Suporte
 
-- GitHub: [seu-usuario]
-- Email: [seu-email]
+- **Issues:** [github.com/koalitos/calc3D/issues](https://github.com/koalitos/calc3D/issues)
+- **Discussões:** [github.com/koalitos/calc3D/discussions](https://github.com/koalitos/calc3D/discussions)
+- **Site:** [koalitos.github.io/calc3D](https://koalitos.github.io/calc3D/)
 
 ---
+
+© 2025 Koalitos - Licença MIT
 
 ⭐ Se este projeto te ajudou, considere dar uma estrela!
