@@ -1,0 +1,26 @@
+# GitHub Pages Configuration
+title: Calc 3D Print
+description: Sistema completo e gratuito para calcular custos e preços de venda de impressões 3D
+author: Seu Nome
+email: seu-email@exemplo.com
+
+# Build settings
+markdown: kramdown
+theme: null
+
+# Exclude files
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+
+# SEO
+lang: pt-BR
+url: "https://koalitos.github.io"
+baseurl: "/calc3D"
+
+# Social
+github_username: koalitos
+
+# Google Analytics (opcional)
+# google_analytics: UA-XXXXXXXXX-X
