@@ -98,6 +98,8 @@ jobs:
       
       - name: Build frontend
         run: npm run build
+        env:
+          CI: false
       
       - name: Build Windows installer
         run: npm run dist:win
@@ -142,6 +144,8 @@ jobs:
       
       - name: Build frontend
         run: npm run build
+        env:
+          CI: false
       
       - name: Build macOS DMG
         run: npm run dist:mac
@@ -189,6 +193,8 @@ jobs:
       
       - name: Build frontend
         run: npm run build
+        env:
+          CI: false
       
       - name: Build Linux packages
         run: npm run dist:linux
