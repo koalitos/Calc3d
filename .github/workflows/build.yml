@@ -92,9 +92,9 @@ jobs:
       
       - name: Install dependencies
         run: |
-          npm install
-          cd backend && npm install && cd ..
-          cd frontend && npm install && cd ..
+          npm install --legacy-peer-deps
+          cd backend && npm install --legacy-peer-deps && cd ..
+          cd frontend && npm install --legacy-peer-deps && cd ..
       
       - name: Build frontend
         run: npm run build
@@ -136,9 +136,9 @@ jobs:
       
       - name: Install dependencies
         run: |
-          npm install
-          cd backend && npm install && cd ..
-          cd frontend && npm install && cd ..
+          npm install --legacy-peer-deps
+          cd backend && npm install --legacy-peer-deps && cd ..
+          cd frontend && npm install --legacy-peer-deps && cd ..
       
       - name: Build frontend
         run: npm run build
@@ -183,9 +183,9 @@ jobs:
       
       - name: Install dependencies
         run: |
-          npm install
-          cd backend && npm install && cd ..
-          cd frontend && npm install && cd ..
+          npm install --legacy-peer-deps
+          cd backend && npm install --legacy-peer-deps && cd ..
+          cd frontend && npm install --legacy-peer-deps && cd ..
       
       - name: Build frontend
         run: npm run build
