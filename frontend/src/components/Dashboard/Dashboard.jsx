@@ -27,7 +27,7 @@ function Dashboard({ user, onLogout }) {
 
   const checkBackendStatus = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/health');
+      const response = await fetch('http://localhost:35001/api/health');
       const data = await response.json();
       if (data.success) {
         setBackendStatus('online');

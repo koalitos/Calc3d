@@ -55,7 +55,7 @@ function StatusView({ backendStatus, backendInfo }) {
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">{t('dashboard.statusLabels.url')}:</span>
-              <span className="font-medium">http://localhost:3001</span>
+              <span className="font-medium">http://localhost:35001</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">{t('dashboard.statusLabels.lastCheck')}:</span>

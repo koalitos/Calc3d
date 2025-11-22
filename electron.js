@@ -8,8 +8,39 @@ let loadingWindow;
 let backendProcess;
 
 // Configuração do backend
-const isDev = process.env.NODE_ENV === 'development';
-const backendPort = 3001;
+const fs = require('fs');
+
+// Detectar se está em desenvolvimento de forma mais robusta
+// 1. Se NODE_ENV=production, forçar produção
+// 2. Se NODE_ENV=development, forçar desenvolvimento
+// 3. Senão, verificar se está empacotado
+// 4. Senão, verificar se package.json existe (código fonte)
+let isDev;
+if (process.env.NODE_ENV === 'production') {
+  isDev = false;
+} else if (process.env.NODE_ENV === 'development') {
+  isDev = true;
+} else {
+  isDev = !app.isPackaged && fs.existsSync(path.join(__dirname, 'package.json'));
+}
+
+const backendPort = 35001;
+
+// Prevenir múltiplas instâncias apenas no app empacotado
+if (app.isPackaged) {
+  const gotTheLock = app.requestSingleInstanceLock();
+  if (!gotTheLock) {
+    console.log('⚠️  Outra instância já está rodando. Encerrando...');
+    app.quit();
+    process.exit(0);
+  }
+  app.on('second-instance', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
+}
 
 // Logs iniciais
 console.log('='.repeat(50));
@@ -52,7 +83,7 @@ function createLoadingWindow() {
   }
 }
 
-function createWindow() {
+async function createWindow() {
   console.log('🪟 Criando janela principal...');
   
   // Criar a janela do navegador
@@ -85,8 +116,11 @@ function createWindow() {
   }
 
   // Carregar o app
-  const startUrl = isDev
-    ? 'http://localhost:3000'
+  // Se o frontend dev estiver rodando (porta 35000), usar ele
+  // Senão, carregar do backend (que serve o frontend buildado)
+  const frontendDevRunning = await checkPort(35000);
+  const startUrl = frontendDevRunning
+    ? 'http://localhost:35000'
     : `http://localhost:${backendPort}`;
 
   console.log('Loading URL:', startUrl);
@@ -119,7 +153,7 @@ function createWindow() {
     }
   }, 10000);
 
-  // Abrir DevTools em desenvolvimento ou se houver erro
+  // Abrir DevTools em desenvolvimento
   if (isDev) {
     mainWindow.webContents.openDevTools();
   }
@@ -174,49 +208,80 @@ function createWindow() {
 }
 
 function startBackend() {
-  const backendPath = isDev
-    ? path.join(__dirname, 'backend', 'src', 'server.js')
-    : path.join(process.resourcesPath, 'backend', 'src', 'server.js');
+  // Determinar o caminho do backend baseado em onde o app está rodando
+  let backendPath;
+  let backendCwd;
+  
+  // Se o app está empacotado (instalado), usar process.resourcesPath
+  // Senão, usar o diretório do projeto (__dirname)
+  if (app.isPackaged) {
+    // App empacotado (instalado): backend está em Resources
+    // __dirname aponta para app.asar, então usar process.resourcesPath
+    const resourcesPath = process.resourcesPath || path.dirname(app.getAppPath());
+    backendPath = path.join(resourcesPath, 'backend', 'src', 'server.js');
+    backendCwd = path.join(resourcesPath, 'backend');
+  } else {
+    // App não empacotado (desenvolvimento ou test-prod): backend está no projeto
+    backendPath = path.join(__dirname, 'backend', 'src', 'server.js');
+    backendCwd = path.join(__dirname, 'backend');
+  }
 
   console.log('');
   console.log('🔧 Iniciando Backend...');
   console.log('📁 Caminho:', backendPath);
+  console.log('📁 CWD:', backendCwd);
+  console.log('🔧 Modo:', isDev ? 'DESENVOLVIMENTO' : 'PRODUÇÃO');
   
   // Verificar se o arquivo existe
-  const fs = require('fs');
   if (!fs.existsSync(backendPath)) {
     console.error('❌ ERRO: Arquivo do backend não encontrado!');
     console.error('❌ Procurado em:', backendPath);
+    console.error('❌ __dirname:', __dirname);
+    console.error('❌ process.resourcesPath:', process.resourcesPath);
     return;
   }
   console.log('✅ Arquivo do backend encontrado');
 
   // Iniciar o servidor backend
-  backendProcess = spawn('node', [backendPath], {
-    cwd: isDev ? path.join(__dirname, 'backend') : path.join(process.resourcesPath, 'backend'),
+  // Usar o Node.js embutido no Electron (sempre disponível!)
+  const nodePath = process.execPath;
+  console.log('✅ Usando Node.js do Electron:', nodePath);
+  
+  // Usar Electron como Node.js com ELECTRON_RUN_AS_NODE
+  backendProcess = spawn(nodePath, [backendPath], {
+    cwd: backendCwd,
     env: {
       ...process.env,
+      PATH: '/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:' + (process.env.PATH || ''),
       PORT: backendPort,
-      NODE_ENV: isDev ? 'development' : 'production'
+      NODE_ENV: isDev ? 'development' : 'production',
+      ELECTRON_RUN_AS_NODE: '1' // Força o Electron a rodar como Node.js
     }
   });
 
   backendProcess.stdout.on('data', (data) => {
     const message = data.toString().trim();
-    console.log(`[Backend] ${message}`);
+    if (message) {
+      console.log(`[Backend] ${message}`);
+    }
   });
 
   backendProcess.stderr.on('data', (data) => {
     const message = data.toString().trim();
-    console.error(`[Backend Error] ${message}`);
+    if (message) {
+      console.error(`[Backend Error] ${message}`);
+    }
   });
+  
+  console.log('✅ Processo do backend iniciado (PID:', backendProcess.pid, ')');
 
-  backendProcess.on('close', (code) => {
-    console.log(`❌ Backend process exited with code ${code}`);
-    if (code !== 0) {
+  backendProcess.on('close', (code, signal) => {
+    console.log(`❌ Backend process exited with code ${code}, signal: ${signal}`);
+    if (code !== 0 && code !== null) {
+      console.error('Backend encerrou com erro. Verifique os logs acima.');
       dialog.showErrorBox(
         'Erro no Backend',
-        `O servidor backend encerrou inesperadamente.\nCódigo: ${code}`
+        `O servidor backend encerrou inesperadamente.\nCódigo: ${code}\n\nVerifique o terminal para mais detalhes.`
       );
     }
   });
@@ -237,9 +302,38 @@ function stopBackend() {
   }
 }
 
+// Verificar se uma porta está respondendo
+function checkPort(port) {
+  return new Promise((resolve) => {
+    const http = require('http');
+    const options = {
+      hostname: 'localhost',
+      port: port,
+      path: '/',
+      method: 'GET',
+      timeout: 500
+    };
+    
+    const req = http.request(options, (res) => {
+      resolve(true);
+    });
+    
+    req.on('error', () => {
+      resolve(false);
+    });
+    
+    req.on('timeout', () => {
+      req.destroy();
+      resolve(false);
+    });
+    
+    req.end();
+  });
+}
+
 // Verificar se o backend está pronto
-function checkBackendReady(retries = 0) {
-  const maxRetries = 20;
+function checkBackendReady(retries = 0, maxRetries = 40) {
+  // maxRetries padrão = 40 (20 segundos)
   
   if (retries === 0) {
     console.log('');
@@ -254,7 +348,7 @@ function checkBackendReady(retries = 0) {
       port: backendPort,
       path: '/api/health',
       method: 'GET',
-      timeout: 1000
+      timeout: 2000 // Aumentado para 2 segundos
     };
     
     const req = http.request(options, (res) => {
@@ -268,23 +362,29 @@ function checkBackendReady(retries = 0) {
             console.log(`⏳ Aguardando backend... (${retries + 1}/${maxRetries})`);
           }
           setTimeout(() => {
-            checkBackendReady(retries + 1).then(resolve);
+            checkBackendReady(retries + 1, maxRetries).then(resolve);
           }, 500);
         } else {
           console.log('⚠️ Backend não respondeu após várias tentativas');
+          console.log('⚠️ Verifique se a porta 35001 está livre: lsof -i :35001');
           console.log('');
           resolve(false);
         }
       }
     });
     
-    req.on('error', () => {
+    req.on('error', (err) => {
       if (retries < maxRetries) {
+        if (retries % 4 === 0) {
+          console.log(`⏳ Aguardando backend... (${retries + 1}/${maxRetries}) - ${err.code || err.message}`);
+        }
         setTimeout(() => {
-          checkBackendReady(retries + 1).then(resolve);
+          checkBackendReady(retries + 1, maxRetries).then(resolve);
         }, 500);
       } else {
         console.log('⚠️ Backend não respondeu após várias tentativas');
+        console.log('⚠️ Último erro:', err.message);
+        console.log('⚠️ Verifique se a porta 35001 está livre: lsof -i :35001');
         resolve(false);
       }
     });
@@ -293,7 +393,7 @@ function checkBackendReady(retries = 0) {
       req.destroy();
       if (retries < maxRetries) {
         setTimeout(() => {
-          checkBackendReady(retries + 1).then(resolve);
+          checkBackendReady(retries + 1, maxRetries).then(resolve);
         }, 500);
       } else {
         resolve(false);
@@ -375,22 +475,43 @@ app.whenReady().then(async () => {
   // Mostrar tela de loading
   createLoadingWindow();
 
-  // Iniciar backend
-  startBackend();
+  // Aguardar um pouco antes de iniciar o backend
+  console.log('⏳ Preparando ambiente...');
+  await new Promise(resolve => setTimeout(resolve, 1000));
 
-  // Aguardar o backend estar pronto
-  console.log('⏳ Aguardando backend iniciar...');
-  await checkBackendReady();
+  // SEMPRE iniciar o backend (exceto se já estiver rodando)
+  console.log('🔍 Verificando se backend já está rodando...');
+  let backendReady = await checkBackendReady(0, 2); // max 2 tentativas
+  
+  // Se não estiver rodando, iniciar SEMPRE
+  if (!backendReady) {
+    console.log('🔧 Iniciando backend...');
+    startBackend();
+    
+    // Aguardar o backend estar pronto
+    console.log('⏳ Aguardando backend iniciar...');
+    backendReady = await checkBackendReady(0, 20); // 20 tentativas = 10 segundos
+  } else {
+    console.log('✅ Backend já está rodando!');
+  }
+  
+  // Se ainda não estiver pronto, mostrar erro mas continuar
+  if (!backendReady) {
+    console.error('⚠️ Backend não respondeu, mas continuando...');
+    console.error('⚠️ O app pode não funcionar corretamente');
+  }
+
   
   // Criar janela principal
-  createWindow();
+  await createWindow();
   
   // Verificar atualizações após 3 segundos (dar tempo do app carregar)
-  if (!isDev) {
-    setTimeout(() => {
-      autoUpdater.checkForUpdates();
-    }, 3000);
-  }
+  // Desabilitado por enquanto - precisa configurar releases no GitHub
+  // if (!isDev) {
+  //   setTimeout(() => {
+  //     autoUpdater.checkForUpdates();
+  //   }, 3000);
+  // }
 
   app.on('activate', () => {
     // No macOS, recriar a janela quando o ícone do dock for clicado

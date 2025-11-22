@@ -3,18 +3,22 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 35001;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Servir arquivos estáticos do frontend em produção
-if (process.env.NODE_ENV === 'production') {
-  const frontendPath = path.join(__dirname, '..', '..', 'frontend', 'build');
+// Servir arquivos estáticos do frontend se o build existir
+const frontendPath = path.join(__dirname, '..', '..', 'frontend', 'build');
+const fs = require('fs');
+if (fs.existsSync(frontendPath)) {
   console.log('📁 Servindo frontend de:', frontendPath);
   app.use(express.static(frontendPath));
+} else {
+  console.log('⚠️  Frontend build não encontrado em:', frontendPath);
+  console.log('   Execute: cd frontend && npm run build');
 }
 
 // Simulação de banco de dados em memória (temporário)

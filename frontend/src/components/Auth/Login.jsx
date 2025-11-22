@@ -18,7 +18,7 @@ function Login({ onLoginSuccess, onSwitchToRegister }) {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:3001/api/auth/login', {
+      const response = await fetch('http://localhost:35001/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
