@@ -5,6 +5,7 @@
   "main": "electron.js",
   "author": {
     "name": "Koalitos",
+    "email": "lamaral.pro@gmail.com",
     "url": "https://github.com/koalitos"
   },
   "license": "MIT",
@@ -164,7 +165,6 @@
       ],
       "title": "Calc 3D Print ${version}",
       "icon": "build/icon.icns",
-      "background": "build/background.png",
       "window": {
         "width": 540,
         "height": 380
