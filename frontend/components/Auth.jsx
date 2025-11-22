@@ -4,7 +4,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 
-const API_URL = 'http://localhost:3001/api';
+const API_URL = 'http://localhost:35001/api';
 
 export function AuthScreen({ onLogin }) {
   const [isLogin, setIsLogin] = useState(true);

@@ -3,7 +3,7 @@ import './App.css';
 import { AuthScreen } from './components/Auth';
 import { analyzeSTL } from './utils/stlAnalyzer';
 
-const API_URL = 'http://localhost:3001/api';
+const API_URL = 'http://localhost:35001/api';
 
 function App() {
   const [user, setUser] = useState(null);
