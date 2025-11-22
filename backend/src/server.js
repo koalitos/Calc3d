@@ -10,6 +10,13 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Servir arquivos estáticos do frontend em produção
+if (process.env.NODE_ENV === 'production') {
+  const frontendPath = path.join(__dirname, '..', '..', 'frontend', 'build');
+  console.log('📁 Servindo frontend de:', frontendPath);
+  app.use(express.static(frontendPath));
+}
+
 // Simulação de banco de dados em memória (temporário)
 const users = [];
 
@@ -28,13 +35,18 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Rota principal
+// Rota principal - servir index.html em produção
 app.get('/', (req, res) => {
-  res.json({
-    name: 'Calc 3D Print API',
-    version: '1.0.0',
-    status: 'online'
-  });
+  if (process.env.NODE_ENV === 'production') {
+    const indexPath = path.join(__dirname, '..', '..', 'frontend', 'build', 'index.html');
+    res.sendFile(indexPath);
+  } else {
+    res.json({
+      name: 'Calc 3D Print API',
+      version: '1.0.0',
+      status: 'online'
+    });
+  }
 });
 
 // Rota de registro
@@ -141,10 +153,19 @@ app.post('/api/auth/login', (req, res) => {
   });
 });
 
+// Rota catch-all para React Router (deve ser a última rota)
+if (process.env.NODE_ENV === 'production') {
+  app.get('*', (req, res) => {
+    const indexPath = path.join(__dirname, '..', '..', 'frontend', 'build', 'index.html');
+    res.sendFile(indexPath);
+  });
+}
+
 // Iniciar servidor
 app.listen(PORT, () => {
   console.log(`🚀 Backend rodando na porta ${PORT}`);
   console.log(`📡 API disponível em http://localhost:${PORT}`);
+  console.log(`🌍 Modo: ${process.env.NODE_ENV || 'development'}`);
 });
 
 // Tratamento de erros

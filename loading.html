@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calc 3D Print - Iniciando...</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .loading-container {
+            text-align: center;
+            color: white;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .logo svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 600;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .loading-bar-container {
+            width: 300px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin: 0 auto 20px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .loading-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #fff, #f0f0f0);
+            border-radius: 10px;
+            animation: loading 1.5s ease-in-out infinite;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        .status {
+            font-size: 0.95em;
+            opacity: 0.8;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .dots {
+            display: inline-block;
+            width: 20px;
+        }
+
+        .dots::after {
+            content: '';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+
+        .version {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.85em;
+            opacity: 0.6;
+        }
+
+        /* Animação de partículas */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float-particle 15s linear infinite;
+        }
+
+        @keyframes float-particle {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="loading-container">
+        <div class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <!-- Background circle -->
+                <circle cx="256" cy="256" r="240" fill="#FFFFFF" opacity="0.2"/>
+                
+                <!-- Main printer body -->
+                <rect x="140" y="180" width="232" height="140" rx="8" fill="#FFFFFF"/>
+                <rect x="150" y="190" width="212" height="40" rx="4" fill="#E0E0E0"/>
+                
+                <!-- Print bed -->
+                <rect x="160" y="320" width="192" height="12" rx="2" fill="#CCCCCC"/>
+                <rect x="165" y="332" width="182" height="8" rx="2" fill="#B0B0B0"/>
+                
+                <!-- Extruder assembly -->
+                <rect x="230" y="140" width="52" height="40" rx="4" fill="#FF6B6B"/>
+                <rect x="240" y="130" width="32" height="20" rx="3" fill="#EE5A5A"/>
+                
+                <!-- Nozzle -->
+                <path d="M 250 180 L 262 180 L 258 200 L 254 200 Z" fill="#CCCCCC"/>
+                
+                <!-- Print object being printed -->
+                <path d="M 230 280 L 256 250 L 282 280 L 270 280 L 270 300 L 242 300 L 242 280 Z" fill="#4ECDC4" opacity="0.9"/>
+                
+                <!-- Control panel -->
+                <rect x="300" y="200" width="50" height="35" rx="3" fill="#4ECDC4"/>
+                <circle cx="315" cy="217" r="4" fill="#3BB5AD"/>
+                <circle cx="335" cy="217" r="4" fill="#3BB5AD"/>
+                <rect x="310" y="225" width="30" height="3" rx="1" fill="#3BB5AD"/>
+                
+                <!-- LED indicators -->
+                <circle cx="170" cy="210" r="5" fill="#FF6B6B"/>
+                <circle cx="190" cy="210" r="5" fill="#51CF66"/>
+                
+                <!-- Frame supports -->
+                <rect x="135" y="150" width="8" height="170" rx="2" fill="#B0B0B0"/>
+                <rect x="369" y="150" width="8" height="170" rx="2" fill="#B0B0B0"/>
+                
+                <!-- Top frame -->
+                <rect x="135" y="145" width="242" height="10" rx="2" fill="#CCCCCC"/>
+                
+                <!-- Z-axis rod -->
+                <rect x="145" y="155" width="4" height="165" fill="#D0D0D0"/>
+                <rect x="363" y="155" width="4" height="165" fill="#D0D0D0"/>
+                
+                <!-- Filament spool -->
+                <circle cx="390" cy="200" r="35" fill="#FFA94D" opacity="0.4"/>
+                <circle cx="390" cy="200" r="25" fill="#FF922B" opacity="0.6"/>
+                <circle cx="390" cy="200" r="10" fill="#CCCCCC"/>
+                
+                <!-- Base -->
+                <rect x="120" y="340" width="272" height="20" rx="4" fill="#FFFFFF"/>
+                <rect x="130" y="360" width="252" height="8" rx="2" fill="#E0E0E0"/>
+            </svg>
+        </div>
+        
+        <h1>Calc 3D Print</h1>
+        <p class="subtitle">Calculadora de Custos para Impressão 3D</p>
+        
+        <div class="loading-bar-container">
+            <div class="loading-bar"></div>
+        </div>
+        
+        <p class="status">
+            <span id="status-text">Iniciando serviços</span><span class="dots"></span>
+        </p>
+    </div>
+    
+    <div class="version">v1.0.0</div>
+
+    <script>
+        // Criar partículas animadas
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // Atualizar mensagens de status
+        const statusMessages = [
+            'Iniciando serviços',
+            'Carregando backend',
+            'Conectando ao banco de dados',
+            'Preparando interface',
+            'Quase pronto'
+        ];
+        
+        let currentMessage = 0;
+        const statusText = document.getElementById('status-text');
+        
+        const messageInterval = setInterval(() => {
+            currentMessage = (currentMessage + 1) % statusMessages.length;
+            statusText.textContent = statusMessages[currentMessage];
+        }, 2000);
+
+        // Timeout de segurança - se demorar muito, mostrar mensagem de erro
+        setTimeout(() => {
+            clearInterval(messageInterval);
+            statusText.textContent = 'Verificando conexão';
+            statusText.style.color = '#FFA94D';
+        }, 8000);
+    </script>
+</body>
+</html>

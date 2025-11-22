@@ -31,10 +31,14 @@
     "start:frontend": "cd frontend && npm start",
     "electron": "electron .",
     "electron-dev": "concurrently \"npm run start:backend\" \"cross-env BROWSER=none npm run start:frontend\" \"wait-on http://localhost:3000 && electron .\"",
+    "dev": "npm run electron-dev",
     "build": "cd frontend && npm run build",
     "build:backend": "cd backend && npm install --production",
     "generate-icons": "node scripts/generate-icons.js && node scripts/create-ico-icns.js",
-    "prebuild": "npm run build",
+    "check": "node scripts/check-setup.js",
+    "test-backend": "node test-backend.js",
+    "test-prod": "cross-env NODE_ENV=production electron .",
+    "debug": "cross-env NODE_ENV=production ELECTRON_ENABLE_LOGGING=1 electron .",
     "dist": "npm run build && electron-builder",
     "dist:win": "npm run build && electron-builder --win",
     "dist:mac": "npm run build && electron-builder --mac",
@@ -75,9 +79,10 @@
     },
     "files": [
       "electron.js",
-      "frontend/build/**/*",
-      "backend/**/*",
-      "!backend/node_modules/**/*",
+      "loading.html",
+      "build/icon.ico",
+      "build/icon.icns",
+      "build/icons/**/*",
       "!backend/database.sqlite",
       "package.json"
     ],
@@ -86,8 +91,14 @@
         "from": "backend",
         "to": "backend",
         "filter": [
-          "**/*",
-          "!node_modules/**/*"
+          "**/*"
+        ]
+      },
+      {
+        "from": "frontend/build",
+        "to": "frontend/build",
+        "filter": [
+          "**/*"
         ]
       }
     ],
@@ -101,17 +112,24 @@
         }
       ],
       "icon": "build/icon.ico",
-      "artifactName": "${productName}-Setup-${version}.${ext}"
+      "artifactName": "${productName}-Setup-${version}.${ext}",
+      "signingHashAlgorithms": null,
+      "sign": null
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "Calc 3D Print",
       "installerIcon": "build/icon.ico",
       "uninstallerIcon": "build/icon.ico",
-      "installerHeaderIcon": "build/icon.ico"
+      "installerHeaderIcon": "build/icon.ico",
+      "perMachine": false,
+      "runAfterFinish": true,
+      "deleteAppDataOnUninstall": false,
+      "warningsAsErrors": false
     },
     "mac": {
       "target": [
