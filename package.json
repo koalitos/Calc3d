@@ -137,7 +137,6 @@
         {
           "target": "dmg",
           "arch": [
-            "x64",
             "arm64"
           ]
         }
@@ -146,7 +145,8 @@
       "category": "public.app-category.productivity",
       "artifactName": "${productName}-${version}-${arch}.${ext}",
       "hardenedRuntime": false,
-      "gatekeeperAssess": false
+      "gatekeeperAssess": false,
+      "type": "distribution"
     },
     "dmg": {
       "contents": [

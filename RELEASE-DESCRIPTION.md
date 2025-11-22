@@ -18,10 +18,11 @@ Sistema completo para calcular custos e preços de venda de impressões 3D.
 Baixe e execute `Calc3DPrint-Setup-1.0.0.exe`
 
 ### 🍎 macOS
-- **Intel**: `Calc3DPrint-1.0.0-x64.dmg`
-- **Apple Silicon (M1/M2/M3)**: `Calc3DPrint-1.0.0-arm64.dmg`
+- **Universal (Intel + Apple Silicon)**: `Calc3DPrint-1.0.0-arm64.dmg`
+  - Funciona em M1/M2/M3 nativamente
+  - Funciona em Intel via Rosetta 2
 
-⚠️ **Importante para macOS**: Se aparecer "app está danificado", veja [instruções de instalação](https://github.com/koalitos/calc3D/blob/main/MACOS-INSTALL.md)
+⚠️ **Importante**: Se aparecer "app está danificado", veja [instruções de instalação](https://github.com/koalitos/calc3D/blob/main/MACOS-INSTALL.md)
 
 ### 🐧 Linux
 - **Universal**: `Calc3DPrint-1.0.0-x64.AppImage`
