@@ -202,16 +202,6 @@ Encontrou um bug? Abra uma [issue](https://github.com/seu-usuario/calc3d-print/i
 3. Inclua custos de embalagem
 4. Calcule as taxas das plataformas
 
-## 📞 Suporte
-
-- 📧 Email: suporte@calc3dprint.com
-- 💬 Discord: [Link do servidor]
-- 📖 Wiki: [Link da wiki]
-
-## 🙏 Agradecimentos
-
-Obrigado a todos que contribuíram para este projeto!
-
 ## ⭐ Star o Projeto
 
 Se este projeto te ajudou, considere dar uma ⭐ no GitHub!
