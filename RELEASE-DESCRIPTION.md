@@ -21,6 +21,8 @@ Baixe e execute `Calc3DPrint-Setup-1.0.0.exe`
 - **Intel**: `Calc3DPrint-1.0.0-x64.dmg`
 - **Apple Silicon (M1/M2/M3)**: `Calc3DPrint-1.0.0-arm64.dmg`
 
+⚠️ **Importante para macOS**: Se aparecer "app está danificado", veja [instruções de instalação](https://github.com/koalitos/calc3D/blob/main/MACOS-INSTALL.md)
+
 ### 🐧 Linux
 - **Universal**: `Calc3DPrint-1.0.0-x64.AppImage`
 - **Debian/Ubuntu**: `calc3dprint_1.0.0_amd64.deb`
