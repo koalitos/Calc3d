@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="#4A90E2" opacity="0.1"/>
+  
+  <!-- Main printer body -->
+  <rect x="140" y="180" width="232" height="140" rx="8" fill="#34495E"/>
+  <rect x="150" y="190" width="212" height="40" rx="4" fill="#2C3E50"/>
+  
+  <!-- Print bed -->
+  <rect x="160" y="320" width="192" height="12" rx="2" fill="#95A5A6"/>
+  <rect x="165" y="332" width="182" height="8" rx="2" fill="#7F8C8D"/>
+  
+  <!-- Extruder assembly -->
+  <rect x="230" y="140" width="52" height="40" rx="4" fill="#E74C3C"/>
+  <rect x="240" y="130" width="32" height="20" rx="3" fill="#C0392B"/>
+  
+  <!-- Nozzle -->
+  <path d="M 250 180 L 262 180 L 258 200 L 254 200 Z" fill="#95A5A6"/>
+  
+  <!-- Print object being printed -->
+  <path d="M 230 280 L 256 250 L 282 280 L 270 280 L 270 300 L 242 300 L 242 280 Z" fill="#3498DB" opacity="0.8"/>
+  
+  <!-- Control panel -->
+  <rect x="300" y="200" width="50" height="35" rx="3" fill="#1ABC9C"/>
+  <circle cx="315" cy="217" r="4" fill="#16A085"/>
+  <circle cx="335" cy="217" r="4" fill="#16A085"/>
+  <rect x="310" y="225" width="30" height="3" rx="1" fill="#16A085"/>
+  
+  <!-- LED indicators -->
+  <circle cx="170" cy="210" r="5" fill="#E74C3C"/>
+  <circle cx="190" cy="210" r="5" fill="#2ECC71"/>
+  
+  <!-- Frame supports -->
+  <rect x="135" y="150" width="8" height="170" rx="2" fill="#7F8C8D"/>
+  <rect x="369" y="150" width="8" height="170" rx="2" fill="#7F8C8D"/>
+  
+  <!-- Top frame -->
+  <rect x="135" y="145" width="242" height="10" rx="2" fill="#95A5A6"/>
+  
+  <!-- Z-axis rod -->
+  <rect x="145" y="155" width="4" height="165" fill="#BDC3C7"/>
+  <rect x="363" y="155" width="4" height="165" fill="#BDC3C7"/>
+  
+  <!-- Filament spool -->
+  <circle cx="390" cy="200" r="35" fill="#E67E22" opacity="0.3"/>
+  <circle cx="390" cy="200" r="25" fill="#D35400" opacity="0.5"/>
+  <circle cx="390" cy="200" r="10" fill="#95A5A6"/>
+  
+  <!-- Base -->
+  <rect x="120" y="340" width="272" height="20" rx="4" fill="#34495E"/>
+  <rect x="130" y="360" width="252" height="8" rx="2" fill="#2C3E50"/>
+  
+  <!-- 3D effect highlights -->
+  <rect x="150" y="190" width="212" height="3" rx="1" fill="#FFFFFF" opacity="0.2"/>
+  <rect x="140" y="180" width="232" height="3" rx="1" fill="#FFFFFF" opacity="0.1"/>
+</svg>

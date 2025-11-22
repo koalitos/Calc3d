@@ -1,0 +1,167 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer components {
+  /* Container principal das views */
+  .view-container {
+    @apply space-y-6;
+  }
+
+  /* Header das views */
+  .view-header {
+    @apply flex justify-between items-start gap-4 mb-6;
+  }
+
+  .view-header h1 {
+    @apply text-3xl font-bold tracking-tight;
+  }
+
+  .view-header .subtitle {
+    @apply text-muted-foreground mt-1;
+  }
+
+  /* Botões */
+  .btn-primary {
+    @apply px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 transition-opacity;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 bg-secondary text-secondary-foreground rounded-lg font-medium hover:bg-secondary/80 transition-colors;
+  }
+
+  .btn-edit {
+    @apply px-3 py-2 bg-blue-500/10 text-blue-400 border border-blue-500/30 rounded-lg hover:bg-blue-500/20 transition-colors text-sm;
+  }
+
+  .btn-delete {
+    @apply px-3 py-2 bg-red-500/10 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/20 transition-colors text-sm;
+  }
+
+  /* Cards de formulário */
+  .form-card {
+    @apply bg-card border border-border rounded-xl p-6 mb-6;
+  }
+
+  .form-card h3 {
+    @apply text-xl font-semibold mb-4;
+  }
+
+  /* Formulários */
+  .form-row {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4;
+  }
+
+  .form-group {
+    @apply space-y-2;
+  }
+
+  .form-group label {
+    @apply block text-sm font-medium text-muted-foreground;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    @apply w-full px-3 py-2 bg-background border border-input rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all;
+  }
+
+  .form-group textarea {
+    @apply resize-none;
+  }
+
+  /* Grid de items */
+  .items-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4;
+  }
+
+  /* Cards de items */
+  .item-card {
+    @apply bg-card border border-border rounded-xl p-5 hover:border-primary/50 transition-all duration-200 space-y-4;
+  }
+
+  .item-header {
+    @apply flex justify-between items-start gap-3;
+  }
+
+  .item-header h3 {
+    @apply text-lg font-semibold flex-1;
+  }
+
+  .item-details {
+    @apply space-y-2;
+  }
+
+  .detail-row {
+    @apply flex justify-between items-center text-sm;
+  }
+
+  .detail-row span {
+    @apply text-muted-foreground;
+  }
+
+  .detail-row strong {
+    @apply text-foreground font-medium;
+  }
+
+  /* Badges */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary text-secondary-foreground;
+  }
+
+  .badge-success {
+    @apply bg-green-500/10 text-green-400 border border-green-500/30;
+  }
+
+  .badge-error {
+    @apply bg-red-500/10 text-red-400 border border-red-500/30;
+  }
+
+  /* Empty state */
+  .empty-state {
+    @apply col-span-full flex flex-col items-center justify-center py-12 text-center space-y-4;
+  }
+
+  .empty-state p {
+    @apply text-muted-foreground text-lg;
+  }
+}

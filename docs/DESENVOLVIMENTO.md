@@ -601,6 +601,14 @@ Agora você está pronto para desenvolver e contribuir com o Calc 3D Print!
 
 Qualquer dúvida, abra uma issue ou discussão no GitHub.
 
+## ☕ Apoie o Projeto
+
+Fiz este projeto para ajudar a comunidade de impressão 3D. Se ele te ajudou e você quiser me ajudar também, pode me apoiar no Ko-fi:
+
+**[☕ Apoiar no Ko-fi](https://ko-fi.com/koalitos)**
+
+Qualquer ajuda é muito bem-vinda e me motiva a continuar desenvolvendo! 💙
+
 ---
 
 **Desenvolvido com ❤️ para a comunidade de impressão 3D**

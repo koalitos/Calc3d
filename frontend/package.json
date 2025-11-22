@@ -1,126 +1,29 @@
 {
-  "name": "electron-react-app",
+  "name": "calc3dprint-frontend",
   "version": "1.0.0",
-  "description": "Aplicação desktop com Electron e React",
-  "main": "public/electron.js",
-  "homepage": "./",
-  "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "electron": "electron .",
-    "backend": "cd backend && npm start",
-    "electron-dev": "concurrently \"npm run backend\" \"npm start\" \"wait-on http://localhost:3000 http://localhost:3001 && electron .\"",
-    "prebuild": "cd backend && npm install --production",
-    "electron-build-win": "npm run build && npm run prebuild && electron-builder --win --x64",
-    "electron-build-mac": "npm run build && npm run prebuild && electron-builder --mac",
-    "dist": "npm run electron-build-win"
-  },
+  "private": true,
   "dependencies": {
-    "@radix-ui/react-dialog": "^1.0.5",
-    "@radix-ui/react-label": "^2.0.2",
-    "@radix-ui/react-select": "^2.0.0",
-    "@radix-ui/react-slot": "^1.0.2",
-    "bcryptjs": "^2.4.3",
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.0.0",
-    "electron-is-dev": "^3.0.1",
-    "jsonwebtoken": "^9.0.2",
-    "lucide-react": "^0.294.0",
+    "@radix-ui/react-avatar": "^1.1.11",
+    "@radix-ui/react-label": "^2.1.8",
+    "@radix-ui/react-scroll-area": "^1.2.10",
+    "@radix-ui/react-separator": "^1.1.8",
+    "@radix-ui/react-slot": "^1.2.4",
+    "axios": "^1.6.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "i18next": "^25.6.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-i18next": "^16.3.5",
+    "react-router-dom": "^6.20.0",
     "react-scripts": "5.0.1",
-    "tailwind-merge": "^2.0.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwind-merge": "^3.4.0"
   },
-  "devDependencies": {
-    "@craco/craco": "^7.1.0",
-    "autoprefixer": "^10.4.16",
-    "concurrently": "^8.2.0",
-    "electron": "^27.0.0",
-    "electron-builder": "^24.6.4",
-    "postcss": "^8.4.31",
-    "tailwindcss": "^3.3.0",
-    "wait-on": "^7.0.1"
-  },
-  "build": {
-    "appId": "com.calc3dprint.app",
-    "productName": "Calc3DPrint",
-    "copyright": "Copyright © 2024",
-    "files": [
-      "build/**/*",
-      "public/electron.js",
-      "backend/**/*",
-      "!backend/node_modules",
-      "!backend/database.db"
-    ],
-    "extraResources": [
-      {
-        "from": "backend",
-        "to": "backend",
-        "filter": [
-          "**/*",
-          "!node_modules/**/*"
-        ]
-      }
-    ],
-    "directories": {
-      "buildResources": "assets",
-      "output": "C:/Temp/calc3d-build"
-    },
-    "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64"
-          ]
-        }
-      ],
-      "icon": "build/icon.ico",
-      "artifactName": "${productName}-Setup-${version}.${ext}"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
-      "shortcutName": "Calc 3D Print",
-      "installerIcon": "build/icon.ico",
-      "uninstallerIcon": "build/icon.ico",
-      "installerHeaderIcon": "build/icon.ico",
-      "license": "LICENSE.txt",
-      "warningsAsErrors": false
-    },
-    "mac": {
-      "target": [
-        {
-          "target": "dmg",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        }
-      ],
-      "icon": "build/icon.icns",
-      "category": "public.app-category.utilities",
-      "artifactName": "${productName}-${version}-${arch}.${ext}"
-    },
-    "dmg": {
-      "title": "Calc 3D Print",
-      "icon": "build/icon.icns",
-      "contents": [
-        {
-          "x": 130,
-          "y": 220
-        },
-        {
-          "x": 410,
-          "y": 220,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ]
-    }
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [

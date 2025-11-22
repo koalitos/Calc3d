@@ -1,6 +1,7 @@
-const { app, BrowserWindow, Menu } = require('electron');
+const { app, BrowserWindow, Menu, dialog } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
+const { autoUpdater } = require('electron-updater');
 
 let mainWindow;
 let backendProcess;
@@ -101,6 +102,72 @@ function stopBackend() {
   }
 }
 
+// Configurar auto-updater
+autoUpdater.autoDownload = false; // Não baixar automaticamente
+autoUpdater.autoInstallOnAppQuit = true; // Instalar ao fechar o app
+
+// Eventos do auto-updater
+autoUpdater.on('checking-for-update', () => {
+  console.log('Verificando atualizações...');
+});
+
+autoUpdater.on('update-available', (info) => {
+  console.log('Atualização disponível:', info.version);
+  
+  dialog.showMessageBox(mainWindow, {
+    type: 'info',
+    title: 'Atualização Disponível',
+    message: `Nova versão ${info.version} disponível!`,
+    detail: 'Deseja baixar e instalar agora?',
+    buttons: ['Sim', 'Depois'],
+    defaultId: 0,
+    cancelId: 1
+  }).then(result => {
+    if (result.response === 0) {
+      autoUpdater.downloadUpdate();
+    }
+  });
+});
+
+autoUpdater.on('update-not-available', () => {
+  console.log('App está atualizado');
+});
+
+autoUpdater.on('download-progress', (progressObj) => {
+  let message = `Baixando: ${Math.round(progressObj.percent)}%`;
+  console.log(message);
+  
+  if (mainWindow) {
+    mainWindow.setProgressBar(progressObj.percent / 100);
+  }
+});
+
+autoUpdater.on('update-downloaded', () => {
+  console.log('Atualização baixada');
+  
+  if (mainWindow) {
+    mainWindow.setProgressBar(-1); // Remove barra de progresso
+  }
+  
+  dialog.showMessageBox(mainWindow, {
+    type: 'info',
+    title: 'Atualização Pronta',
+    message: 'Atualização baixada com sucesso!',
+    detail: 'O app será atualizado ao fechar. Deseja reiniciar agora?',
+    buttons: ['Reiniciar', 'Depois'],
+    defaultId: 0,
+    cancelId: 1
+  }).then(result => {
+    if (result.response === 0) {
+      autoUpdater.quitAndInstall();
+    }
+  });
+});
+
+autoUpdater.on('error', (error) => {
+  console.error('Erro na atualização:', error);
+});
+
 // Este método será chamado quando o Electron terminar a inicialização
 app.whenReady().then(() => {
   // Iniciar backend
@@ -109,6 +176,13 @@ app.whenReady().then(() => {
   // Aguardar um pouco para o backend iniciar
   setTimeout(() => {
     createWindow();
+    
+    // Verificar atualizações após 3 segundos (dar tempo do app carregar)
+    if (!isDev) {
+      setTimeout(() => {
+        autoUpdater.checkForUpdates();
+      }, 3000);
+    }
   }, 2000);
 
   app.on('activate', () => {

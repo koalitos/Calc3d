@@ -1,0 +1,127 @@
+.App {
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: hsl(var(--background));
+}
+
+.loading-screen {
+  text-align: center;
+  padding: 2rem;
+}
+
+.loading-screen h1 {
+  font-size: 3rem;
+  color: hsl(var(--foreground));
+  margin-bottom: 1rem;
+}
+
+.loading-screen p {
+  color: hsl(var(--muted-foreground));
+  font-size: 1.125rem;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.App-header {
+  text-align: center;
+  padding: 2rem;
+}
+
+.App-header h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: hsl(var(--foreground));
+}
+
+.App-header p {
+  font-size: 1.25rem;
+  color: hsl(var(--muted-foreground));
+  margin-bottom: 2rem;
+}
+
+.info {
+  background: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.5rem;
+  padding: 2rem;
+  margin-top: 2rem;
+}
+
+.info p {
+  font-size: 1rem;
+  margin: 0.5rem 0;
+  color: hsl(var(--foreground));
+}
+
+/* Ko-fi Support Button */
+.kofi-support-link {
+  display: block;
+  text-decoration: none;
+}
+
+.kofi-support-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.kofi-support-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.3);
+  border-color: hsl(var(--primary));
+}
+
+.kofi-support-btn:hover .kofi-icon {
+  animation: coffeeShake 0.6s ease-in-out;
+}
+
+.kofi-support-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px -1px rgba(99, 102, 241, 0.2);
+}
+
+.kofi-icon {
+  display: inline-block;
+  font-size: 1.3rem;
+  transition: transform 0.3s ease;
+}
+
+/* Animação de shake para o ícone de café */
+@keyframes coffeeShake {
+  0%, 100% { 
+    transform: rotate(0deg) scale(1);
+  }
+  10%, 30%, 50%, 70%, 90% { 
+    transform: rotate(-10deg) scale(1.1);
+  }
+  20%, 40%, 60%, 80% { 
+    transform: rotate(10deg) scale(1.1);
+  }
+}
+
+/* Efeito de brilho ao passar o mouse */
+.kofi-support-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.kofi-support-btn:hover::before {
+  left: 100%;
+}

@@ -1,215 +1,231 @@
 # 💎 Calc 3D Print
 
-Sistema completo para calcular custos e preços de venda de impressões 3D.
-
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
-![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS-blue)
-![GitHub stars](https://img.shields.io/github/stars/koalitos/calc3D?style=social)
-
-**🌐 [Visite o Site Oficial](https://koalitos.github.io/calc3D/)**
+Sistema completo de cálculo de custos para impressão 3D com interface desktop usando Electron.
 
 ## 🎯 Funcionalidades
 
-### 🧵 Gestão de Filamentos
-- Cadastro de filamentos (PLA, ABS, PETG, TPU, Nylon)
-- Controle de peso e custo
-- Cálculo automático de custo por grama
+### ✅ Gestão Completa
+- **Filamentos**: Cadastro com custo por grama e controle de estoque
+- **Máquinas**: Registro de impressoras com custo de energia e depreciação
+- **Projetos**: Cálculo automático de custos com upload de G-code
+- **Vendas**: Registro de vendas com desconto automático de estoque
+- **Embalagens**: Controle de embalagens e custos
+- **Plataformas**: Gestão de taxas de marketplaces (Shopee, Mercado Livre, etc)
+- **Despesas**: Controle de despesas operacionais
+- **Financeiro**: Relatórios e análises financeiras
+- **Backup**: Sistema de backup e restauração de dados
 
-### 🖨️ Gestão de Máquinas
-- Cadastro de impressoras 3D
-- Controle de potência e consumo
-- Cálculo de custo de energia
-- Depreciação por hora de uso
+### 🎯 Upload de G-code (Precisão Máxima!)
+- Extrai peso EXATO do filamento do arquivo G-code
+- Extrai tempo EXATO de impressão
+- Compatível com Cura, PrusaSlicer, Simplify3D e outros
+- Suporta formatos .gcode e .gco
 
-### 📦 Gestão de Projetos
-- Upload e análise de arquivos STL
-- Cálculo automático de volume e peso
-- Estimativa de tempo de impressão
-- Cálculo de custos completo
-- Definição de margem de lucro
-- **Preço de venda sugerido**
+### 💰 Cálculo Automático de Custos
+- Custo de filamento (peso × custo/g)
+- Custo de energia (tempo × kWh)
+- Depreciação da máquina
+- Custo de embalagem
+- Taxa de plataforma de venda
+- Margem de lucro configurável
+- **Preço de venda final calculado automaticamente**
 
-### 🔐 Sistema de Autenticação
-- Login seguro com JWT
-- Senhas criptografadas (bcrypt)
-- Dados isolados por usuário
+## 🚀 Tecnologias
 
-### 📊 Análise de STL
-- Upload de arquivos .stl
-- Cálculo de volume (mm³ e cm³)
-- Estimativa de peso baseada em densidade
-- Estimativa de tempo de impressão
+- **Frontend**: React 18
+- **Desktop**: Electron
+- **Backend**: Node.js + Express
+- **Autenticação**: JWT
+- **Armazenamento**: LocalStorage (migração para SQLite planejada)
 
-## 🚀 Instalação
+## 📦 Instalação
 
-### Para Usuários
+### Pré-requisitos
+- Node.js 18+ instalado
+- npm ou yarn
 
-Baixe o instalador para seu sistema operacional:
-- **Windows:** `Calc3DPrint-Setup-1.0.0.exe`
-- **macOS:** `Calc3DPrint-1.0.0-x64.dmg` (Intel) ou `Calc3DPrint-1.0.0-arm64.dmg` (Apple Silicon)
+### Passos
 
-**[📥 Download na página de Releases](https://github.com/koalitos/calc3D/releases)**
-
-Veja o [Guia de Instalação](docs/INSTALACAO.md) completo.
-
-### Para Desenvolvedores
-
+1. Clone o repositório:
 ```bash
-# Clone o repositório
-git clone https://github.com/koalitos/calc3D.git
-cd calc3D
+git clone https://github.com/seu-usuario/calc3d-print.git
+cd calc3d-print
+```
 
-# Instale dependências do frontend
-npm install
-
-# Instale dependências do backend
+2. Instale as dependências do backend:
+```bash
 cd backend
 npm install
+```
+
+3. Instale as dependências do frontend:
+```bash
+cd ../frontend
+npm install
+```
+
+4. Instale as dependências do Electron:
+```bash
 cd ..
-
-# Execute em modo desenvolvimento
-npm run electron-dev
+npm install
 ```
 
-Veja o [Guia de Desenvolvimento](docs/DESENVOLVIMENTO.md) completo.
+## 🎮 Como Usar
 
-## 📁 Estrutura do Projeto
+### Modo Desenvolvimento
 
-```
-calc3D/
-├── backend/          # Backend Node.js + Express + SQLite
-├── frontend/         # Frontend React + Electron
-├── docs/            # Documentação
-├── scripts/         # Scripts utilitários
-└── public/          # Arquivos públicos
+1. Inicie o backend (Terminal 1):
+```bash
+cd backend
+npm start
 ```
 
-## 🛠️ Tecnologias
+2. Inicie o frontend (Terminal 2):
+```bash
+cd frontend
+npm start
+```
 
-**Frontend:**
-- React 18
-- Tailwind CSS
-- shadcn/ui
-- Electron 27
+3. Inicie o Electron (Terminal 3):
+```bash
+npm start
+```
 
-**Backend:**
-- Node.js
-- Express
-- SQLite
-- JWT + Bcrypt
-
-## 📖 Documentação
-
-- [Guia de Instalação](docs/INSTALACAO.md) - Para usuários finais
-- [Guia de Desenvolvimento](docs/DESENVOLVIMENTO.md) - Para desenvolvedores
-- [Documentação da API](docs/API.md) - Endpoints e exemplos
-- [Instruções de Build](build-instructions.md) - Como compilar
-
-## 🎨 Screenshots
-
-### Tela de Login
-Sistema de autenticação seguro com JWT
-
-### Dashboard
-Interface moderna com tema escuro
-
-### Análise de STL
-Upload e análise automática de arquivos 3D
-
-### Cálculo de Custos
-Cálculo detalhado com preço de venda sugerido
-
-## 💻 Comandos
+### Modo Produção
 
 ```bash
-# Desenvolvimento
-npm run electron-dev    # Inicia tudo (backend + frontend + electron)
-
-# Build
-npm run dist           # Gera instalador Windows
-
-# Backend
-cd backend
-npm start             # Inicia apenas o backend
-npm run reset         # Reseta o banco de dados
+npm run build
 ```
 
-## 📊 Cálculo de Custos
+O executável será gerado na pasta `dist/`.
 
-O sistema calcula automaticamente:
+## 📖 Guia de Uso
 
-1. **Custo do Filamento:** Baseado no peso usado e custo por grama
-2. **Custo de Energia:** Potência da máquina × tempo × custo kWh
-3. **Depreciação:** Custo de desgaste da máquina por hora
-4. **Custo Total:** Soma de todos os custos
-5. **Preço de Venda:** Custo total + margem de lucro
+### 1. Primeiro Acesso
+- Login padrão: `admin` / `admin123`
+- Altere a senha após o primeiro acesso
 
-## 🔒 Segurança
+### 2. Configuração Inicial
+1. Cadastre seus **Filamentos** (nome, custo/g, estoque)
+2. Cadastre suas **Máquinas** (nome, consumo, depreciação)
+3. Cadastre **Embalagens** (opcional)
+4. Cadastre **Plataformas** de venda (opcional)
 
-- Senhas criptografadas com bcrypt
-- Autenticação JWT com expiração
-- Dados locais (SQLite)
-- Sem conexão com internet necessária
+### 3. Criando um Projeto
+1. Vá em **Projetos** → **+ Novo Projeto**
+2. Faça upload do arquivo **G-code** (recomendado para precisão)
+3. Ou preencha manualmente peso e tempo
+4. Selecione filamento, máquina, embalagem e plataforma
+5. Defina a margem de lucro
+6. O sistema calcula automaticamente o preço de venda!
 
-## 📦 Distribuição
+### 4. Registrando uma Venda
+1. Vá em **Vendas** → **+ Nova Venda**
+2. Selecione o projeto
+3. Informe cliente e forma de pagamento
+4. O estoque de embalagem é descontado automaticamente
 
-### Plataformas Suportadas
-- ✅ **Windows** 10/11 (64-bit)
-- ✅ **macOS** 10.13+ (Intel e Apple Silicon)
-- 🔄 **Linux** (em desenvolvimento)
+### 5. Relatórios
+- Acesse **Financeiro** para ver relatórios completos
+- Filtre por período
+- Veja lucro, custos e vendas
 
-### O instalador inclui:
-- ✅ Aplicativo completo
-- ✅ Backend integrado
-- ✅ Banco de dados SQLite
-- ✅ Todas as dependências
-- ✅ ~150-200 MB instalado
+## 📄 Licença
 
-## 🤝 Contribuindo
+Este projeto está licenciado sob a **MIT License com restrições comerciais**.
 
-Contribuições são bem-vindas! Veja [DESENVOLVIMENTO.md](docs/DESENVOLVIMENTO.md)
+### ✅ Você PODE:
+- ✅ Usar gratuitamente para seu negócio
+- ✅ Modificar o código
+- ✅ Contribuir com melhorias
+- ✅ Distribuir cópias modificadas
 
-## 📝 Licença
+### ❌ Você NÃO PODE:
+- ❌ Vender este software
+- ❌ Cobrar pelo acesso ao sistema
+- ❌ Remover os créditos originais
 
-Este projeto está sob a licença MIT. Veja [LICENSE](LICENSE)
-
-## 👨‍💻 Autor
-
-**Koalitos**
-- GitHub: [@koalitos](https://github.com/koalitos)
-- Projeto: [Calc 3D Print](https://github.com/koalitos/calc3D)
-
-Desenvolvido com ❤️ para a comunidade de impressão 3D
+Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
 ## 🤝 Contribuindo
 
 Contribuições são bem-vindas! Para contribuir:
 
 1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/NovaFuncionalidade`)
-3. Commit suas mudanças (`git commit -m 'Add: nova funcionalidade'`)
-4. Push para a branch (`git push origin feature/NovaFuncionalidade`)
+2. Crie uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
+3. Commit suas mudanças (`git commit -m 'Adiciona MinhaFeature'`)
+4. Push para a branch (`git push origin feature/MinhaFeature`)
 5. Abra um Pull Request
 
-Veja [DESENVOLVIMENTO.md](docs/DESENVOLVIMENTO.md) para mais detalhes.
+### Diretrizes
+- Mantenha o código limpo e documentado
+- Teste suas alterações antes de enviar
+- Siga o padrão de código existente
+- Atualize a documentação se necessário
 
-## 🐛 Reportar Bugs
+## 🐛 Reportando Bugs
 
-Encontrou um bug? [Abra uma issue](https://github.com/koalitos/calc3D/issues) descrevendo:
-- O que aconteceu
-- O que deveria acontecer
+Encontrou um bug? Abra uma [issue](https://github.com/seu-usuario/calc3d-print/issues) com:
+- Descrição clara do problema
 - Passos para reproduzir
-- Versão do sistema e do aplicativo
+- Comportamento esperado vs atual
+- Screenshots (se aplicável)
+- Versão do sistema operacional
+
+## 🗺️ Roadmap
+
+### Em Desenvolvimento
+- [ ] Migração para SQLite
+- [ ] Gráficos de vendas e lucros
+- [ ] Exportação de relatórios em PDF
+- [ ] Multi-usuário
+- [ ] Sincronização em nuvem (opcional)
+
+### Futuro
+- [ ] App mobile (React Native)
+- [ ] Integração com marketplaces
+- [ ] Sistema de orçamentos
+- [ ] Controle de clientes
+- [ ] Notificações de estoque baixo
+
+## 💡 Dicas
+
+### Para Máxima Precisão
+1. **Use G-code ao invés de STL**: O G-code contém dados exatos do slicer
+2. **Configure custos reais**: Meça o consumo real da sua impressora
+3. **Atualize preços**: Mantenha os custos de filamento atualizados
+4. **Registre todas as despesas**: Para relatórios precisos
+
+### Otimizando Lucros
+1. Ajuste a margem de lucro por tipo de projeto
+2. Considere o tempo de pós-processamento
+3. Inclua custos de embalagem
+4. Calcule as taxas das plataformas
 
 ## 📞 Suporte
 
-- **Issues:** [github.com/koalitos/calc3D/issues](https://github.com/koalitos/calc3D/issues)
-- **Discussões:** [github.com/koalitos/calc3D/discussions](https://github.com/koalitos/calc3D/discussions)
-- **Site:** [koalitos.github.io/calc3D](https://koalitos.github.io/calc3D/)
+- 📧 Email: suporte@calc3dprint.com
+- 💬 Discord: [Link do servidor]
+- 📖 Wiki: [Link da wiki]
+
+## 🙏 Agradecimentos
+
+Obrigado a todos que contribuíram para este projeto!
+
+## ⭐ Star o Projeto
+
+Se este projeto te ajudou, considere dar uma ⭐ no GitHub!
+
+## ☕ Apoie o Projeto
+
+Fiz este projeto para ajudar a comunidade de impressão 3D. Se ele te ajudou e você quiser me ajudar também, pode me apoiar no Ko-fi:
+
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20Me-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/koalitos)
+
+**[☕ Apoiar no Ko-fi](https://ko-fi.com/koalitos)**
+
+Qualquer ajuda é muito bem-vinda e me motiva a continuar desenvolvendo e melhorando o projeto! 💙
 
 ---
 
-© 2025 Koalitos - Licença MIT
-
-⭐ Se este projeto te ajudou, considere dar uma estrela!
+**Desenvolvido com ❤️ para a comunidade de impressão 3D**
