@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import Dashboard from './components/Dashboard/Dashboard';
+import AutoUpdater from './components/AutoUpdater';
 import './i18n/config';
 import './App.css';
 
@@ -84,6 +85,9 @@ function App() {
           onLogout={handleLogout}
         />
       )}
+      
+      {/* Componente de Auto-Update (só aparece quando há atualização) */}
+      <AutoUpdater />
     </div>
   );
 }

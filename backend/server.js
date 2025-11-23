@@ -18,17 +18,39 @@ app.get('/api/health', (req, res) => {
 // Determinar caminho do banco de dados
 // Em produção, salvar na pasta de dados do usuário
 const isDev = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
-const dbPath = isDev
-  ? path.join(__dirname, 'database.db')
-  : path.join(process.env.APPDATA || process.env.HOME, 'Calc3DPrint', 'database.db');
 
-// Criar diretório se não existir
-if (!isDev) {
-  const dbDir = path.dirname(dbPath);
-  if (!fs.existsSync(dbDir)) {
-    fs.mkdirSync(dbDir, { recursive: true });
+// Obter pasta de dados do usuário
+let userDataPath;
+if (process.env.ELECTRON_USER_DATA) {
+  userDataPath = process.env.ELECTRON_USER_DATA;
+} else if (isDev) {
+  userDataPath = __dirname;
+} else {
+  // Fallback para APPDATA/HOME
+  userDataPath = process.env.APPDATA || process.env.HOME || __dirname;
+}
+
+// Criar pasta data se não existir
+const dataDir = path.join(userDataPath, 'data');
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
+}
+
+// Caminho do banco de dados
+const dbPath = path.join(dataDir, 'database.db');
+
+// Migração automática de dados antigos
+const oldDbPath = path.join(__dirname, 'database.db');
+if (fs.existsSync(oldDbPath) && !fs.existsSync(dbPath)) {
+  try {
+    fs.copyFileSync(oldDbPath, dbPath);
+    console.log('✅ Banco de dados migrado para:', dbPath);
+  } catch (err) {
+    console.error('❌ Erro ao migrar banco de dados:', err);
   }
 }
+
+console.log('📁 Banco de dados em:', dbPath);
 
 console.log('Banco de dados em:', dbPath);
 

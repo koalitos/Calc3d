@@ -231,8 +231,19 @@
         </p>
     </div>
     
-    <div class="version">v1.0.0</div>
+    <div class="version" id="app-version">v1.0.0</div>
 
+    <script>
+        // Tentar obter versão do package.json via require (se disponível)
+        try {
+            if (typeof require !== 'undefined') {
+                const { version } = require('./package.json');
+                document.getElementById('app-version').textContent = 'v' + version;
+            }
+        } catch (e) {
+            // Manter versão padrão se falhar
+        }
+    </script>
     <script>
         // Criar partículas animadas
         const particlesContainer = document.getElementById('particles');

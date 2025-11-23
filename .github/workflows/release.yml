@@ -1,0 +1,227 @@
+name: Build & Release Calc 3D Print
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-win:
+    name: Windows Build
+    runs-on: windows-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install root dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install frontend dependencies
+        run: npm ci --prefix frontend
+        
+      - name: Install backend dependencies (production)
+        run: npm ci --omit=dev --prefix backend
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Build Windows Installer
+        run: |
+          echo "========================================="
+          echo "Starting Windows build..."
+          echo "========================================="
+          echo "Time: $(Get-Date -Format 'HH:mm:ss')"
+          echo "Memory: $(Get-CimInstance Win32_OperatingSystem | Select-Object @{Name='FreeGB';Expression={[math]::Round($_.FreePhysicalMemory/1MB,2)}})"
+          echo ""
+          echo "[1/4] Checking files..."
+          dir frontend\build
+          echo ""
+          echo "[2/4] Checking backend..."
+          dir backend
+          echo ""
+          echo "[3/4] Starting electron-builder..."
+          npm run dist:win -- --publish never
+          echo ""
+          echo "[4/4] Build completed!"
+          echo "Time: $(Get-Date -Format 'HH:mm:ss')"
+          dir dist
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEBUG: electron-builder
+        shell: pwsh
+
+      - name: Upload Windows Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: win-dist
+          path: |
+            dist/*.exe
+            dist/*.exe.blockmap
+            dist/*.yml
+
+  build-mac:
+    name: macOS Build
+    runs-on: macos-latest
+    timeout-minutes: 40
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install root dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install frontend dependencies
+        run: npm ci --prefix frontend
+        
+      - name: Install backend dependencies (production)
+        run: npm ci --omit=dev --prefix backend
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Build macOS Installer
+        run: |
+          echo "========================================="
+          echo "Starting macOS build..."
+          echo "========================================="
+          date
+          echo ""
+          echo "[1/3] Checking files..."
+          ls -la frontend/build
+          echo ""
+          echo "[2/3] Starting electron-builder..."
+          npm run dist:mac -- --publish never
+          echo ""
+          echo "[3/3] Build completed!"
+          date
+          ls -la dist
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+          DEBUG: electron-builder
+
+      - name: Upload macOS Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mac-dist
+          path: |
+            dist/*.dmg
+            dist/*.dmg.blockmap
+            dist/*.yml
+
+  build-linux:
+    name: Linux Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install root dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install frontend dependencies
+        run: npm ci --prefix frontend
+        
+      - name: Install backend dependencies (production)
+        run: npm ci --omit=dev --prefix backend
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Build Linux Packages
+        run: |
+          echo "========================================="
+          echo "Starting Linux build..."
+          echo "========================================="
+          date
+          echo ""
+          echo "[1/3] Checking files..."
+          ls -la frontend/build
+          echo ""
+          echo "[2/3] Starting electron-builder..."
+          npm run dist:linux -- --publish never
+          echo ""
+          echo "[3/3] Build completed!"
+          date
+          ls -la dist
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEBUG: electron-builder
+
+      - name: Upload Linux Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-dist
+          path: |
+            dist/*.AppImage
+            dist/*.deb
+            dist/*.yml
+
+  release:
+    name: Generate GitHub Release
+    runs-on: ubuntu-latest
+    needs: [build-win, build-mac, build-linux]
+
+    steps:
+      - name: Download Win Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: win-dist
+          path: release/win
+
+      - name: Download Mac Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: mac-dist
+          path: release/mac
+
+      - name: Download Linux Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-dist
+          path: release/linux
+
+      - name: List files to upload
+        run: |
+          echo "Files to be uploaded:"
+          find release -type f \( -name "*.exe" -o -name "*.dmg" -o -name "*.AppImage" -o -name "*.deb" -o -name "*.yml" \)
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          name: "Calc 3D Print ${{ github.ref_name }}"
+          tag: ${{ github.ref_name }}
+          artifacts: "release/win/*.exe,release/win/*.yml,release/mac/*.dmg,release/mac/*.yml,release/linux/*.AppImage,release/linux/*.deb,release/linux/*.yml"
+          allowUpdates: true
+          removeArtifacts: true
+          replacesArtifacts: true
+          makeLatest: true
+          generateReleaseNotes: true
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

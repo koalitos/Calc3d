@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, dialog } = require('electron');
+const { app, BrowserWindow, Menu, dialog, ipcMain } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
 const { autoUpdater } = require('electron-updater');
@@ -103,7 +103,8 @@ async function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       enableRemoteModule: false,
-      devTools: isDev
+      devTools: isDev,
+      preload: path.join(__dirname, 'preload.js')
     },
     backgroundColor: '#0f172a',
     show: false,
@@ -218,11 +219,11 @@ function startBackend() {
     // App empacotado (instalado): backend está em Resources
     // __dirname aponta para app.asar, então usar process.resourcesPath
     const resourcesPath = process.resourcesPath || path.dirname(app.getAppPath());
-    backendPath = path.join(resourcesPath, 'backend', 'src', 'server.js');
+    backendPath = path.join(resourcesPath, 'backend', 'server.js');
     backendCwd = path.join(resourcesPath, 'backend');
   } else {
     // App não empacotado (desenvolvimento ou test-prod): backend está no projeto
-    backendPath = path.join(__dirname, 'backend', 'src', 'server.js');
+    backendPath = path.join(__dirname, 'backend', 'server.js');
     backendCwd = path.join(__dirname, 'backend');
   }
 
@@ -248,6 +249,10 @@ function startBackend() {
   console.log('✅ Usando Node.js do Electron:', nodePath);
   
   // Usar Electron como Node.js com ELECTRON_RUN_AS_NODE
+  // Obter pasta de dados do usuário
+  const userDataPath = app.getPath('userData');
+  console.log('📁 userData:', userDataPath);
+
   backendProcess = spawn(nodePath, [backendPath], {
     cwd: backendCwd,
     env: {
@@ -255,7 +260,8 @@ function startBackend() {
       PATH: '/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:' + (process.env.PATH || ''),
       PORT: backendPort,
       NODE_ENV: isDev ? 'development' : 'production',
-      ELECTRON_RUN_AS_NODE: '1' // Força o Electron a rodar como Node.js
+      ELECTRON_RUN_AS_NODE: '1', // Força o Electron a rodar como Node.js
+      ELECTRON_USER_DATA: userDataPath // ← CRÍTICO para persistência de dados!
     }
   });
 
@@ -405,8 +411,24 @@ function checkBackendReady(retries = 0, maxRetries = 40) {
 }
 
 // Configurar auto-updater
-autoUpdater.autoDownload = false; // Não baixar automaticamente
+autoUpdater.autoDownload = true; // Baixar automaticamente
 autoUpdater.autoInstallOnAppQuit = true; // Instalar ao fechar o app
+autoUpdater.logger = console;
+
+// IPC Handlers para auto-update
+ipcMain.on('check-for-updates', () => {
+  if (!isDev) {
+    autoUpdater.checkForUpdates();
+  }
+});
+
+ipcMain.on('download-update', () => {
+  autoUpdater.downloadUpdate();
+});
+
+ipcMain.on('install-update', () => {
+  autoUpdater.quitAndInstall(false, true);
+});
 
 // Eventos do auto-updater
 autoUpdater.on('checking-for-update', () => {
@@ -416,23 +438,18 @@ autoUpdater.on('checking-for-update', () => {
 autoUpdater.on('update-available', (info) => {
   console.log('Atualização disponível:', info.version);
   
-  dialog.showMessageBox(mainWindow, {
-    type: 'info',
-    title: 'Atualização Disponível',
-    message: `Nova versão ${info.version} disponível!`,
-    detail: 'Deseja baixar e instalar agora?',
-    buttons: ['Sim', 'Depois'],
-    defaultId: 0,
-    cancelId: 1
-  }).then(result => {
-    if (result.response === 0) {
-      autoUpdater.downloadUpdate();
-    }
-  });
+  // Enviar para o renderer process
+  if (mainWindow) {
+    mainWindow.webContents.send('update-available', info);
+  }
 });
 
-autoUpdater.on('update-not-available', () => {
+autoUpdater.on('update-not-available', (info) => {
   console.log('App está atualizado');
+  
+  if (mainWindow) {
+    mainWindow.webContents.send('update-not-available', info);
+  }
 });
 
 autoUpdater.on('download-progress', (progressObj) => {
@@ -441,33 +458,27 @@ autoUpdater.on('download-progress', (progressObj) => {
   
   if (mainWindow) {
     mainWindow.setProgressBar(progressObj.percent / 100);
+    mainWindow.webContents.send('download-progress', {
+      percent: Math.round(progressObj.percent)
+    });
   }
 });
 
-autoUpdater.on('update-downloaded', () => {
+autoUpdater.on('update-downloaded', (info) => {
   console.log('Atualização baixada');
   
   if (mainWindow) {
     mainWindow.setProgressBar(-1); // Remove barra de progresso
+    mainWindow.webContents.send('update-downloaded', info);
   }
-  
-  dialog.showMessageBox(mainWindow, {
-    type: 'info',
-    title: 'Atualização Pronta',
-    message: 'Atualização baixada com sucesso!',
-    detail: 'O app será atualizado ao fechar. Deseja reiniciar agora?',
-    buttons: ['Reiniciar', 'Depois'],
-    defaultId: 0,
-    cancelId: 1
-  }).then(result => {
-    if (result.response === 0) {
-      autoUpdater.quitAndInstall();
-    }
-  });
 });
 
 autoUpdater.on('error', (error) => {
   console.error('Erro na atualização:', error);
+  
+  if (mainWindow) {
+    mainWindow.webContents.send('update-error', error.message);
+  }
 });
 
 // Este método será chamado quando o Electron terminar a inicialização
@@ -506,12 +517,11 @@ app.whenReady().then(async () => {
   await createWindow();
   
   // Verificar atualizações após 3 segundos (dar tempo do app carregar)
-  // Desabilitado por enquanto - precisa configurar releases no GitHub
-  // if (!isDev) {
-  //   setTimeout(() => {
-  //     autoUpdater.checkForUpdates();
-  //   }, 3000);
-  // }
+  if (!isDev) {
+    setTimeout(() => {
+      autoUpdater.checkForUpdates();
+    }, 3000);
+  }
 
   app.on('activate', () => {
     // No macOS, recriar a janela quando o ícone do dock for clicado

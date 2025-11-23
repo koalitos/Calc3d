@@ -82,6 +82,7 @@
     },
     "files": [
       "electron.js",
+      "preload.js",
       "loading.html",
       "build/icon.ico",
       "build/icon.icns",
@@ -130,8 +131,9 @@
       "uninstallerIcon": "build/icon.ico",
       "installerHeaderIcon": "build/icon.ico",
       "perMachine": false,
-      "runAfterFinish": true,
+      "runAfterFinish": false,
       "deleteAppDataOnUninstall": false,
+      "differentialPackage": true,
       "warningsAsErrors": false
     },
     "mac": {

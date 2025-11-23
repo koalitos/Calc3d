@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
+import { APP_VERSION } from '../../config/version';
 
 function StatusView({ backendStatus, backendInfo }) {
   const { t } = useTranslation();
   const [frontendInfo, setFrontendInfo] = useState({
-    version: '1.0.0',
+    version: APP_VERSION,
     uptime: 0
   });
 

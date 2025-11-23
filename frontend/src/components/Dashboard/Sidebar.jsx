@@ -5,6 +5,7 @@ import { Button } from '../ui/button';
 import { Separator } from '../ui/separator';
 import { ScrollArea } from '../ui/scroll-area';
 import { Avatar, AvatarFallback } from '../ui/avatar';
+import { APP_VERSION } from '../../config/version';
 
 function Sidebar({ currentView, setCurrentView, backendStatus, user, onLogout }) {
   const { t } = useTranslation();
@@ -92,7 +93,7 @@ function Sidebar({ currentView, setCurrentView, backendStatus, user, onLogout })
         </Button>
         
         <div className="text-center text-xs text-muted-foreground pt-2">
-          v1.0.0
+          v{APP_VERSION}
         </div>
       </div>
     </aside>

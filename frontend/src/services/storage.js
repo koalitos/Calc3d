@@ -1,4 +1,5 @@
 // Serviço de armazenamento local (simula banco de dados)
+import { APP_VERSION } from '../config/version';
 
 const STORAGE_KEYS = {
   FILAMENTS: 'calc3d_filaments',
@@ -337,7 +338,7 @@ export const exportDatabase = () => {
     packages: getPackages(),
     platforms: getPlatforms(),
     exportedAt: new Date().toISOString(),
-    version: '1.0.0'
+    version: APP_VERSION
   };
   
   const dataStr = JSON.stringify(database, null, 2);
