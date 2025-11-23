@@ -14,6 +14,8 @@ jobs:
     name: Windows Build
     runs-on: windows-latest
     timeout-minutes: 30
+    env:
+      CI: false
 
     steps:
       - uses: actions/checkout@v4
@@ -22,16 +24,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
       - name: Install root dependencies
-        run: npm ci --ignore-scripts
+        run: npm install --legacy-peer-deps
 
       - name: Install frontend dependencies
-        run: npm ci --prefix frontend
+        run: npm install --legacy-peer-deps --prefix frontend
         
       - name: Install backend dependencies (production)
-        run: npm ci --omit=dev --prefix backend
+        run: npm install --omit=dev --legacy-peer-deps --prefix backend
 
       - name: Build frontend
         run: npm run build
@@ -42,7 +43,6 @@ jobs:
           echo "Starting Windows build..."
           echo "========================================="
           echo "Time: $(Get-Date -Format 'HH:mm:ss')"
-          echo "Memory: $(Get-CimInstance Win32_OperatingSystem | Select-Object @{Name='FreeGB';Expression={[math]::Round($_.FreePhysicalMemory/1MB,2)}})"
           echo ""
           echo "[1/4] Checking files..."
           dir frontend\build
@@ -58,7 +58,7 @@ jobs:
           dir dist
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEBUG: electron-builder
+          CSC_IDENTITY_AUTO_DISCOVERY: false
         shell: pwsh
 
       - name: Upload Windows Artifacts
@@ -74,6 +74,8 @@ jobs:
     name: macOS Build
     runs-on: macos-latest
     timeout-minutes: 40
+    env:
+      CI: false
 
     steps:
       - uses: actions/checkout@v4
@@ -82,16 +84,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
       - name: Install root dependencies
-        run: npm ci --ignore-scripts
+        run: npm install --legacy-peer-deps
 
       - name: Install frontend dependencies
-        run: npm ci --prefix frontend
+        run: npm install --legacy-peer-deps --prefix frontend
         
       - name: Install backend dependencies (production)
-        run: npm ci --omit=dev --prefix backend
+        run: npm install --omit=dev --legacy-peer-deps --prefix backend
 
       - name: Build frontend
         run: npm run build
@@ -115,7 +116,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_IDENTITY_AUTO_DISCOVERY: false
-          DEBUG: electron-builder
 
       - name: Upload macOS Artifacts
         uses: actions/upload-artifact@v4
@@ -130,6 +130,8 @@ jobs:
     name: Linux Build
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      CI: false
 
     steps:
       - uses: actions/checkout@v4
@@ -138,16 +140,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
       - name: Install root dependencies
-        run: npm ci --ignore-scripts
+        run: npm install --legacy-peer-deps
 
       - name: Install frontend dependencies
-        run: npm ci --prefix frontend
+        run: npm install --legacy-peer-deps --prefix frontend
         
       - name: Install backend dependencies (production)
-        run: npm ci --omit=dev --prefix backend
+        run: npm install --omit=dev --legacy-peer-deps --prefix backend
 
       - name: Build frontend
         run: npm run build
@@ -170,7 +171,7 @@ jobs:
           ls -la dist
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEBUG: electron-builder
+          CSC_IDENTITY_AUTO_DISCOVERY: false
 
       - name: Upload Linux Artifacts
         uses: actions/upload-artifact@v4
