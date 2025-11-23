@@ -74,6 +74,7 @@
     "appId": "com.koalitos.calc3dprint",
     "productName": "Calc 3D Print",
     "copyright": "Copyright © 2025 Koalitos",
+    "compression": "normal",
     "afterSign": null,
     "afterPack": null,
     "directories": {
