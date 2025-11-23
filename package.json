@@ -96,7 +96,17 @@
         "from": "backend",
         "to": "backend",
         "filter": [
-          "**/*"
+          "**/*",
+          "!**/*.md",
+          "!**/.git*",
+          "!**/test/**",
+          "!**/tests/**",
+          "!**/__tests__/**",
+          "!**/node_modules/**/test/**",
+          "!**/node_modules/**/tests/**",
+          "!**/node_modules/**/*.md",
+          "!**/node_modules/**/.git*",
+          "!database.db"
         ]
       },
       {
@@ -133,9 +143,11 @@
       "installerHeaderIcon": "build/icon.ico",
       "perMachine": false,
       "runAfterFinish": false,
+      "packElevateHelper": false,
       "deleteAppDataOnUninstall": false,
       "differentialPackage": true,
-      "warningsAsErrors": false
+      "warningsAsErrors": false,
+      "unicode": false
     },
     "mac": {
       "target": [
