@@ -53,12 +53,6 @@ export default function AutoUpdater() {
     };
   }, []);
 
-  const handleDownload = () => {
-    setDownloading(true);
-    setError(null);
-    window.electron.send('download-update');
-  };
-
   // Iniciar download automaticamente quando detectar atualização
   useEffect(() => {
     if (updateInfo && !downloading && !downloaded && !error) {
