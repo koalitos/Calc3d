@@ -92,6 +92,9 @@
       "build/icon.ico",
       "build/icon.icns",
       "build/icons/**/*",
+      "build/entitlements.mac.plist",
+      "build/entitlements.mac.inherit.plist",
+      "scripts/fix-quarantine.js",
       "!backend/database.sqlite",
       "package.json"
     ],
@@ -160,14 +163,25 @@
             "arm64",
             "x64"
           ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
         }
       ],
       "icon": "build/icon.icns",
       "category": "public.app-category.productivity",
       "artifactName": "${productName}-${version}-${arch}.${ext}",
-      "hardenedRuntime": false,
+      "hardenedRuntime": true,
       "gatekeeperAssess": false,
-      "type": "distribution"
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.inherit.plist",
+      "identity": null,
+      "type": "distribution",
+      "notarize": false
     },
     "dmg": {
       "title": "Calc 3D Print ${version}",
