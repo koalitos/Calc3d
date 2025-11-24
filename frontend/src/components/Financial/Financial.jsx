@@ -135,10 +135,10 @@ function Financial() {
         </div>
       )}
 
-      {/* Resumo Mensal */}
+      {/* Resumo do Mês Selecionado */}
       <div style={{background: 'rgba(30, 41, 59, 0.6)', border: '1px solid rgba(99, 102, 241, 0.3)', borderRadius: '0.75rem', padding: '1.5rem'}}>
         <h3 style={{color: '#f1f5f9', marginBottom: '1rem'}}>
-          {t('financial.monthlySummary')} {new Date(selectedMonth + '-01').toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
+          {t('financial.monthlySummary')} - {new Date(selectedMonth + '-01').toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
         </h3>
         <div style={{display: 'grid', gap: '0.5rem', color: '#cbd5e1'}}>
           <div style={{display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', borderBottom: '1px solid rgba(99, 102, 241, 0.2)'}}>

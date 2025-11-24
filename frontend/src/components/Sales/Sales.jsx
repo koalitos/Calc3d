@@ -171,11 +171,11 @@ function Sales() {
                 <input
                   type="number"
                   step="0.01"
+                  min="0"
                   value={formData.salePrice}
-                  onChange={(e) => setFormData({...formData, salePrice: parseFloat(e.target.value)})}
+                  onChange={(e) => setFormData({...formData, salePrice: parseFloat(e.target.value) || 0})}
                   required
-                  readOnly
-                  style={{background: 'rgba(99, 102, 241, 0.1)'}}
+                  placeholder="0.00"
                 />
               </div>
             </div>
