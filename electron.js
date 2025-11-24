@@ -356,7 +356,7 @@ function checkBackendReady(retries = 0, maxRetries = 40) {
     const http = require('http');
     
     const options = {
-      hostname: 'localhost',
+      hostname: '127.0.0.1',
       port: backendPort,
       path: '/api/health',
       method: 'GET',
