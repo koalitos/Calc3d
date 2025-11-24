@@ -512,6 +512,21 @@ autoUpdater.on('update-not-available', (info) => {
 
 autoUpdater.on('error', (err) => {
   console.error('❌ Erro ao verificar atualizações:', err);
+  
+  // Silenciar erro 404 (release não publicado ainda) - não mostrar para usuário
+  if (err.message && (err.message.includes('404') || err.message.includes('Not Found'))) {
+    console.log('ℹ️ Nenhuma release publicada ainda - auto-update desabilitado');
+    return; // Não enviar para o frontend
+  }
+  
+  // Outros erros podem ser mostrados
+  if (mainWindow) {
+    mainWindow.webContents.send('update-error', err.message);
+  }
+});
+
+autoUpdater.on('error', (err) => {
+  console.error('❌ Erro ao verificar atualizações:', err);
   if (mainWindow) {
     mainWindow.webContents.send('update-error', err.message);
   }
