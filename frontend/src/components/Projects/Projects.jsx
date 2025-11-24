@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getProjects, saveProject, deleteProject, getFilaments, getMachines, getPackages, getPlatforms } from '../../services/storage';
+import { getPackages, getPlatforms } from '../../services/storage';
+import api from '../../services/api';
 
 function Projects() {
   const { t } = useTranslation();
@@ -28,12 +29,23 @@ function Projects() {
     loadData();
   }, []);
 
-  const loadData = () => {
-    setProjects(getProjects());
-    setFilaments(getFilaments());
-    setMachines(getMachines());
-    setPackages(getPackages());
-    setPlatforms(getPlatforms());
+  const loadData = async () => {
+    try {
+      const [projectsData, filamentsData, machinesData] = await Promise.all([
+        api.getProjetos(),
+        api.getFilamentos(),
+        api.getMaquinas()
+      ]);
+      
+      setProjects(projectsData || []);
+      setFilaments(filamentsData || []);
+      setMachines(machinesData || []);
+      setPackages(getPackages());
+      setPlatforms(getPlatforms());
+    } catch (error) {
+      console.error('Erro ao carregar dados:', error);
+      alert('Erro ao carregar dados. Verifique se o backend está rodando.');
+    }
   };
 
   const handleGcodeUpload = (e) => {
@@ -107,24 +119,31 @@ function Projects() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const projectData = {
+        nome: formData.name,
+        filamentoId: parseInt(formData.filamentId),
+        maquinaId: parseInt(formData.machineId),
+        pesoUsado: parseFloat(formData.weight),
+        tempoHoras: parseFloat(formData.printTime),
+        margemLucro: parseFloat(formData.profitMargin)
+      };
+
       if (editingId) {
-        // Atualizar projeto existente
-        const updatedProjects = projects.map(p => 
-          p.id === editingId ? { ...p, ...formData } : p
-        );
-        localStorage.setItem('projects', JSON.stringify(updatedProjects));
+        await api.updateProjeto(editingId, projectData);
         setEditingId(null);
       } else {
-        saveProject(formData);
+        await api.createProjeto(projectData);
       }
+      
       setFormData({ name: '', client: '', filamentId: '', machineId: '', packageId: '', platformId: '', weight: 0, printTime: 0, profitMargin: 50, stlFileName: '' });
       setShowForm(false);
-      loadData();
+      await loadData();
     } catch (error) {
-      alert(error.message);
+      console.error('Erro ao salvar projeto:', error);
+      alert('Erro ao salvar projeto: ' + (error.message || 'Erro desconhecido'));
     }
   };
 
@@ -145,10 +164,15 @@ function Projects() {
     setShowForm(true);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm(t('projects.confirmDelete'))) {
-      deleteProject(id);
-      loadData();
+      try {
+        await api.deleteProjeto(id);
+        await loadData();
+      } catch (error) {
+        console.error('Erro ao deletar projeto:', error);
+        alert('Erro ao deletar projeto: ' + (error.message || 'Erro desconhecido'));
+      }
     }
   };
 
