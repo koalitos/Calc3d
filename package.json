@@ -100,18 +100,15 @@
         "from": "backend",
         "to": "backend",
         "filter": [
-          "**/*",
-          "!**/*.md",
-          "!**/.git*",
-          "!**/test/**",
-          "!**/tests/**",
-          "!**/__tests__/**",
-          "!**/.*",
-          "!database.db",
-          "!**/node_modules/**/{README,readme,README.md,readme.md,CHANGELOG,CHANGELOG.md,LICENSE,license,LICENSE.md}",
-          "!**/node_modules/**/{test,tests,__tests__,example,examples,docs,doc}/**",
-          "!**/node_modules/**/*.{ts,map,d.ts,flow,md,markdown,txt,yml,yaml}",
-          "!**/node_modules/**/.*"
+          "src/**/*",
+          "package.json",
+          "node_modules/**/*.js",
+          "node_modules/**/*.node",
+          "node_modules/**/package.json",
+          "!node_modules/**/test/**",
+          "!node_modules/**/tests/**",
+          "!node_modules/**/*.{md,ts,map,d.ts,txt,yml,yaml}",
+          "!database.db"
         ]
       },
       {
