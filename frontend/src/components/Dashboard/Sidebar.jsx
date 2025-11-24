@@ -32,17 +32,6 @@ function Sidebar({ currentView, setCurrentView, backendStatus, user, onLogout })
         <nav className="space-y-1 px-3">
           <NavButton view="home" icon="🏠" label={t('dashboard.home')} />
           
-          <Button
-            variant={currentView === 'status' ? "secondary" : "ghost"}
-            className="w-full justify-start gap-3"
-            onClick={() => setCurrentView('status')}
-          >
-            <span className="text-lg">
-              {backendStatus === 'online' ? '🟢' : backendStatus === 'offline' ? '🔴' : '🟡'}
-            </span>
-            <span>{t('dashboard.status')}</span>
-          </Button>
-          
           <Separator className="my-2" />
           
           <NavButton view="filaments" icon="🧵" label={t('dashboard.filaments')} />
@@ -64,6 +53,17 @@ function Sidebar({ currentView, setCurrentView, backendStatus, user, onLogout })
       </ScrollArea>
       
       <div className="p-4 border-t space-y-3">
+        <Button
+          variant={currentView === 'status' ? "secondary" : "ghost"}
+          className="w-full justify-start gap-3"
+          onClick={() => setCurrentView('status')}
+        >
+          <span className="text-lg">
+            {backendStatus === 'online' ? '🟢' : backendStatus === 'offline' ? '🔴' : '🟡'}
+          </span>
+          <span>{t('dashboard.status')}</span>
+        </Button>
+        
         <a 
           href="https://ko-fi.com/koalitos" 
           target="_blank" 

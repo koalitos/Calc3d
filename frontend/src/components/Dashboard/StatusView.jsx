@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
 import { APP_VERSION } from '../../config/version';
 
 function StatusView({ backendStatus, backendInfo }) {
@@ -10,6 +11,8 @@ function StatusView({ backendStatus, backendInfo }) {
     version: APP_VERSION,
     uptime: 0
   });
+  const [isRestarting, setIsRestarting] = useState(false);
+  const [restartMessage, setRestartMessage] = useState('');
 
   useEffect(() => {
     const startTime = Date.now();
@@ -19,6 +22,37 @@ function StatusView({ backendStatus, backendInfo }) {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (window.electron) {
+      window.electron.on('backend-restarted', (data) => {
+        setIsRestarting(false);
+        if (data.success) {
+          setRestartMessage('✅ Backend reiniciado com sucesso!');
+          setTimeout(() => setRestartMessage(''), 3000);
+        } else {
+          setRestartMessage(`❌ Erro: ${data.error}`);
+        }
+      });
+    }
+
+    return () => {
+      if (window.electron) {
+        window.electron.removeAllListeners('backend-restarted');
+      }
+    };
+  }, []);
+
+  const handleRestartBackend = () => {
+    if (!window.electron) {
+      setRestartMessage('⚠️ Função disponível apenas no app desktop');
+      return;
+    }
+
+    setIsRestarting(true);
+    setRestartMessage('🔄 Reiniciando backend...');
+    window.electron.send('restart-backend');
+  };
 
   const formatUptime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
@@ -49,10 +83,10 @@ function StatusView({ backendStatus, backendInfo }) {
               {getStatusBadge(backendStatus)}
             </div>
           </CardHeader>
-          <CardContent className="space-y-2 text-sm">
+          <CardContent className="space-y-3 text-sm">
             <div className="flex justify-between">
               <span className="text-muted-foreground">{t('dashboard.statusLabels.port')}:</span>
-              <span className="font-medium">3001</span>
+              <span className="font-medium">35001</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">{t('dashboard.statusLabels.url')}:</span>
@@ -68,6 +102,34 @@ function StatusView({ backendStatus, backendInfo }) {
               <span className="text-muted-foreground">{t('dashboard.statusLabels.message')}:</span>
               <span className="font-medium">{backendInfo?.message || t('dashboard.statusLabels.waiting')}</span>
             </div>
+            
+            {restartMessage && (
+              <div className={`p-2 rounded text-xs ${
+                restartMessage.includes('✅') 
+                  ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200'
+                  : restartMessage.includes('❌')
+                  ? 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200'
+                  : 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200'
+              }`}>
+                {restartMessage}
+              </div>
+            )}
+            
+            <Button
+              variant="destructive"
+              size="sm"
+              className="w-full mt-2"
+              onClick={handleRestartBackend}
+              disabled={isRestarting || !window.electron}
+            >
+              <span className={isRestarting ? 'inline-block animate-spin mr-2' : 'mr-2'}>🔄</span>
+              {isRestarting ? 'Reiniciando...' : 'Reiniciar Backend'}
+            </Button>
+            {!window.electron && (
+              <p className="text-xs text-muted-foreground text-center">
+                Disponível apenas no app desktop
+              </p>
+            )}
           </CardContent>
         </Card>
 

@@ -4,6 +4,7 @@ import { Button } from '../ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
+import api from '../../services/api';
 
 function Register({ onRegisterSuccess, onSwitchToLogin }) {
   const { t } = useTranslation();
@@ -31,21 +32,13 @@ function Register({ onRegisterSuccess, onSwitchToLogin }) {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:35001/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        localStorage.setItem('token', data.data.token);
-        onRegisterSuccess(data.data.user);
+      const data = await api.register(username, password);
+      
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        onRegisterSuccess(data.user);
       } else {
-        setError(data.error?.message || t('auth.errors.registerFailed'));
+        setError(t('auth.errors.registerFailed'));
       }
     } catch (err) {
       setError(t('auth.errors.connectionError'));

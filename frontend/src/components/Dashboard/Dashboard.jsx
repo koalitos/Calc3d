@@ -29,7 +29,7 @@ function Dashboard({ user, onLogout }) {
     try {
       const response = await fetch('http://localhost:35001/api/health');
       const data = await response.json();
-      if (data.success) {
+      if (data.status === 'ok' || data.success) {
         setBackendStatus('online');
         setBackendInfo(data);
       } else {

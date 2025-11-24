@@ -4,6 +4,7 @@ import { Button } from '../ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
+import api from '../../services/api';
 
 function Login({ onLoginSuccess, onSwitchToRegister }) {
   const { t } = useTranslation();
@@ -18,21 +19,13 @@ function Login({ onLoginSuccess, onSwitchToRegister }) {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:35001/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        localStorage.setItem('token', data.data.token);
-        onLoginSuccess(data.data.user);
+      const data = await api.login(username, password);
+      
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        onLoginSuccess(data.user);
       } else {
-        setError(data.error?.message || t('auth.errors.loginFailed'));
+        setError(t('auth.errors.loginFailed'));
       }
     } catch (err) {
       setError(t('auth.errors.connectionError'));

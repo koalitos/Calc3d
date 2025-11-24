@@ -8,7 +8,8 @@ contextBridge.exposeInMainWorld('electron', {
     const validChannels = [
       'check-for-updates',
       'download-update',
-      'install-update'
+      'install-update',
+      'restart-backend'
     ];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
@@ -22,7 +23,8 @@ contextBridge.exposeInMainWorld('electron', {
       'update-not-available',
       'download-progress',
       'update-downloaded',
-      'update-error'
+      'update-error',
+      'backend-restarted'
     ];
     if (validChannels.includes(channel)) {
       // Remover o event do callback para segurança
@@ -37,7 +39,8 @@ contextBridge.exposeInMainWorld('electron', {
       'update-not-available',
       'download-progress',
       'update-downloaded',
-      'update-error'
+      'update-error',
+      'backend-restarted'
     ];
     if (validChannels.includes(channel)) {
       ipcRenderer.removeAllListeners(channel);

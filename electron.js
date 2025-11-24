@@ -553,7 +553,7 @@ ipcMain.on('download-update', () => {
 });
 
 ipcMain.on('install-update', () => {
-  console.log('� Recebidao comando install-update');
+  console.log('📥 Recebido comando install-update');
   
   if (!isDev) {
     if (!updateDownloaded) {
@@ -576,5 +576,40 @@ ipcMain.on('install-update', () => {
         app.quit();
       }, 1000);
     });
+  }
+});
+
+// Handler para reiniciar o backend
+ipcMain.on('restart-backend', (event) => {
+  console.log('🔄 Recebido comando para reiniciar backend');
+  
+  try {
+    // Parar o backend atual
+    if (backendProcess) {
+      console.log('⏹️  Parando backend atual...');
+      stopBackend();
+    }
+    
+    // Aguardar um pouco antes de reiniciar
+    setTimeout(() => {
+      console.log('▶️  Reiniciando backend...');
+      startBackend();
+      
+      // Aguardar backend iniciar e notificar o frontend
+      setTimeout(() => {
+        if (mainWindow) {
+          mainWindow.webContents.send('backend-restarted', { success: true });
+        }
+      }, 3000);
+    }, 1000);
+    
+  } catch (error) {
+    console.error('❌ Erro ao reiniciar backend:', error);
+    if (mainWindow) {
+      mainWindow.webContents.send('backend-restarted', { 
+        success: false, 
+        error: error.message 
+      });
+    }
   }
 });
