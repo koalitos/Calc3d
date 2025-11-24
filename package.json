@@ -97,6 +97,7 @@
       "build/entitlements.mac.plist",
       "build/entitlements.mac.inherit.plist",
       "scripts/fix-quarantine.js",
+      "scripts/mac-update-assistant.js",
       "!backend/database.sqlite",
       "package.json"
     ],
