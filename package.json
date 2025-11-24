@@ -75,6 +75,10 @@
     "productName": "Calc 3D Print",
     "copyright": "Copyright © 2025 Koalitos",
     "compression": "normal",
+    "asar": true,
+    "asarUnpack": [
+      "**/node_modules/sqlite3/**/*"
+    ],
     "afterSign": null,
     "afterPack": null,
     "directories": {
@@ -102,11 +106,12 @@
           "!**/test/**",
           "!**/tests/**",
           "!**/__tests__/**",
-          "!**/node_modules/**/test/**",
-          "!**/node_modules/**/tests/**",
-          "!**/node_modules/**/*.md",
-          "!**/node_modules/**/.git*",
-          "!database.db"
+          "!**/.*",
+          "!database.db",
+          "!**/node_modules/**/{README,readme,README.md,readme.md,CHANGELOG,CHANGELOG.md,LICENSE,license,LICENSE.md}",
+          "!**/node_modules/**/{test,tests,__tests__,example,examples,docs,doc}/**",
+          "!**/node_modules/**/*.{ts,map,d.ts,flow,md,markdown,txt,yml,yaml}",
+          "!**/node_modules/**/.*"
         ]
       },
       {
