@@ -1,6 +1,6 @@
 {
   "name": "calc3dprint",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "Sistema completo para calcular custos e preços de venda de impressões 3D",
   "main": "electron.js",
   "author": {
