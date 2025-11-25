@@ -57,3 +57,12 @@ pnpm-lock.yaml
 # Electron
 out/
 .webpack/
+
+# Certificados (NUNCA commitar!)
+cert/*.pfx
+cert/*.p12
+cert/*.cer
+cert/*.pem
+cert/*.key
+cert-base64.txt
+!cert/README.md

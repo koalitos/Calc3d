@@ -1,6 +1,6 @@
 {
   "name": "calc3dprint",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "description": "Sistema completo para calcular custos e preços de venda de impressões 3D",
   "main": "electron.js",
   "author": {
@@ -97,7 +97,6 @@
       "build/entitlements.mac.plist",
       "build/entitlements.mac.inherit.plist",
       "scripts/fix-quarantine.js",
-      "scripts/mac-update-assistant.js",
       "!backend/database.sqlite",
       "package.json"
     ],
@@ -137,7 +136,11 @@
       ],
       "icon": "build/icon.ico",
       "artifactName": "${productName}-Setup-${version}.${ext}",
-      "signingHashAlgorithms": null,
+      "certificateFile": "./cert/certificado-lucas.pfx",
+      "certificatePassword": "${env.WINDOWS_CERT_PASSWORD}",
+      "signingHashAlgorithms": [
+        "sha256"
+      ],
       "sign": null
     },
     "nsis": {
@@ -182,9 +185,11 @@
       "gatekeeperAssess": false,
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.inherit.plist",
-      "identity": null,
+      "identity": "${env.APPLE_IDENTITY}",
       "type": "distribution",
-      "notarize": false
+      "notarize": {
+        "teamId": "${env.APPLE_TEAM_ID}"
+      }
     },
     "dmg": {
       "title": "Calc 3D Print ${version}",
